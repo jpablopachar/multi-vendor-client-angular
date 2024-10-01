@@ -96,6 +96,17 @@ const authFeature = createFeature({
       userInfo: action.response.userInfo,
       successMessage: action.response.message as string,
     })),
+    on(authActions.logout, (state: AuthState) => ({
+      ...state,
+    })),
+    on(authActions.logoutSuccess, (state: AuthState, action) => ({
+      ...state,
+      successMessage: action.response,
+    })),
+    on(authActions.logoutError, (state: AuthState, action) => ({
+      ...state,
+      errorMessage: action.error,
+    }))
   ),
 });
 
