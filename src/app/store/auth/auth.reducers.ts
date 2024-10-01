@@ -19,6 +19,7 @@ const authFeature = createFeature({
     on(authActions.messageClear, (state: AuthState) => ({
       ...state,
       errorMessage: '',
+      successMessage: '',
     })),
     on(authActions.adminLogin, (state: AuthState) => ({
       ...state,
@@ -102,6 +103,9 @@ const authFeature = createFeature({
     on(authActions.logoutSuccess, (state: AuthState, action) => ({
       ...state,
       successMessage: action.response,
+      userInfo: '',
+      role: '',
+      token: '',
     })),
     on(authActions.logoutError, (state: AuthState, action) => ({
       ...state,

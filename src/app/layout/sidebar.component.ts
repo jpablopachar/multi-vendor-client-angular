@@ -12,7 +12,7 @@ import {
 import { Router, RouterLink } from '@angular/router'
 import { NavType } from '@app/models'
 import { getNav } from '@app/navigation'
-import { selectRole } from '@app/store/auth'
+import { authActions, selectRole } from '@app/store/auth'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import {
   faRightFromBracket,
@@ -64,6 +64,7 @@ import { Subscription } from 'rxjs'
           }
           <li>
             <button
+              (click)="logout(role)"
               class="text-[#030811] font-bold duration-200 px-[12px] py-[9px] rounded-sm flex justify-start items-center gap-[12px] hover:pl-4 transition-all w-full mb-1"
             >
               <span>
@@ -101,4 +102,8 @@ export class SidebarComponent {
 
       this.$navs.set(navs);
     });
+
+  public logout(role: string): void {
+    this._store.dispatch(authActions.logout({ role }));
+  }
 }
