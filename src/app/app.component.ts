@@ -1,18 +1,25 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, inject, OnDestroy } from '@angular/core'
 import { RouterOutlet } from '@angular/router'
-import { environment } from '@src/environments/environment'
+import { Store } from '@ngrx/store'
+import { Subscription } from 'rxjs'
+import { authActions, selectToken } from './store/auth'
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  template: `<router-outlet />`,
 })
-export class AppComponent implements OnInit {
-  private _apiUr: string = environment.apiUrl;
+export class AppComponent implements OnDestroy {
+  private readonly _store = inject(Store);
 
-  ngOnInit(): void {
-    console.log(this._apiUr);
+  private _token$: Subscription = this._store
+    .select(selectToken)
+    .subscribe((token: string | null): void => {
+      if (token !== null) this._store.dispatch(authActions.getUserInfo());
+    });
+
+  ngOnDestroy(): void {
+    this._token$.unsubscribe();
   }
 }
