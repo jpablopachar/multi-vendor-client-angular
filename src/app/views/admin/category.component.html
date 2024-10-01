@@ -1,0 +1,161 @@
+<div class="px-2 lg:px-7 pt-5">
+    <div
+        class="flex lg:hidden justify-between items-center mb-5 p-4 bg-[#6a5fdf] rounded-md"
+    >
+        <h1 class="text-[#d0d2d6] font-semibold text-lg">Category</h1>
+        <button
+            (click)="$show.set(true)"
+            class="bg-red-500 shadow-lg hover:shadow-red-500/40 px-4 py-2 cursor-pointer text-white rounded-sm text-sm"
+        >
+            Add
+        </button>
+    </div>
+    <div class="flex flex-wrap w-full">
+        <div class="w-full lg:w-7/12">
+            <div class="w-full p-4 bg-[#6a5fdf] rounded-md">
+                <app-search
+                    [searchValue]="$searchValue()"
+                    (setSearchValue)="$searchValue.set($event)"
+                    (setParPage)="$parPage.set($event)"
+                ></app-search>
+                <div class="relative overflow-x-auto">
+                    <table class="w-full text-sm text-left text-[#d0d2d6]">
+                        <thead
+                            class="text-sm text-[#d0d2d6] uppercase border-b border-slate-700"
+                        >
+                            <tr>
+                                <th scope="col" class="py-3 px-4">No</th>
+                                <th scope="col" class="py-3 px-4">Image</th>
+                                <th scope="col" class="py-3 px-4">Name</th>
+                                <th scope="col" class="py-3 px-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (category of $categories(); track category._id;
+                            let idx = $index) {
+                            <tr>
+                                <td
+                                    class="py-1 px-4 font-medium whitespace-nowrap"
+                                >
+                                    {{ idx + 1 }}
+                                </td>
+                                <td
+                                    class="py-1 px-4 font-medium whitespace-nowrap"
+                                >
+                                    <img
+                                        class="w-[45px] h-[45px]"
+                                        [src]="category.image"
+                                        alt=""
+                                    />
+                                </td>
+                                <td
+                                    class="py-1 px-4 font-medium whitespace-nowrap"
+                                >
+                                    {{ category.name }}
+                                </td>
+                                <td
+                                    class="py-1 px-4 font-medium whitespace-nowrap"
+                                >
+                                    <div
+                                        class="flex justify-start items-center gap-4"
+                                    >
+                                        <a
+                                            class="p-[6px] bg-yellow-500 rounded hover:shadow-lg hover:shadow-yellow-500/50"
+                                        >
+                                            <fa-icon
+                                                [icon]="fanPenToSquare"
+                                            ></fa-icon>
+                                        </a>
+                                        <a
+                                            class="p-[6px] bg-red-500 rounded hover:shadow-lg hover:shadow-red-500/50"
+                                        >
+                                            <fa-icon [icon]="faTrash"></fa-icon>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="w-full flex justify-end mt-4 bottom-4 right-4">
+                    <app-pagination
+                        [$pageNumber]="$currentPage()"
+                        [$totalItem]="50"
+                        [$parPage]="$parPage()"
+                        [$showItem]="3"
+                        (setPageNumber)="$currentPage.set($event)"
+                    ></app-pagination>
+                </div>
+            </div>
+        </div>
+        <div
+            class="w-[320px] lg:w-5/12 translate-x-100 lg:relative lg:right-0 fixed z-[9999] top-0 transition-all duration-500"
+            [ngClass]="$show() ? 'right-0' : '-right-[340px]'"
+        >
+            <div class="w-full pl-5">
+                <div
+                    class="bg-[#6a5fdf] h-screen lg:h-auto px-3 py-2 lg:rounded-md text-[#d0d2d6]"
+                >
+                    <div class="flex justify-between items-center mb-4">
+                        <h1
+                            class="text-[#d0d2d6] font-semibold text-xl mb-4 w-full text-center"
+                        >
+                            Add Category
+                        </h1>
+                        <div class="block lg:hidden">
+                            <fa-icon [icon]="faCircleXmark"></fa-icon>
+                        </div>
+                    </div>
+                    <form [formGroup]="categoryForm" (ngSubmit)="submit()">
+                        <div class="flex flex-col w-full gap-1 mb-3">
+                            <label for="name"> Category Name</label>
+                            <input
+                                class="px-4 py-2 focus:border-indigo-500 outline-none bg-[#ffffff] border border-slate-700 rounded-md text-[#000000]"
+                                type="text"
+                                id="name"
+                                name="category_name"
+                                placeholder="Category Name"
+                                formControlName="name"
+                            />
+                        </div>
+                        <div>
+                            <label
+                                class="flex justify-center items-center flex-col h-[238px] cursor-pointer border border-dashed hover:border-red-500 w-full border-[#d0d2d6]"
+                                for="image"
+                            >
+                                @if ($imageShow()) {
+                                <img
+                                    class="w-full h-full"
+                                    [src]="$imageShow()"
+                                    alt="image-category"
+                                />
+                                } @else {
+                                <span>
+                                    <fa-icon [icon]="faImage"></fa-icon>
+                                </span>
+                                <span>Select Image</span>
+                                }
+                            </label>
+                            <input
+                                (change)="imageHandle($event)"
+                                class="hidden"
+                                type="file"
+                                name="image"
+                                id="image"
+                            />
+                            <div class="mt-4">
+                                <button
+                                    [disabled]="$loader() ? true : false"
+                                    class="bg-red-800 w-full hover:shadow-red-300/50 hover:shadow-lg text-white rounded-md px-7 py-2 mb-3"
+                                >
+                                    Add Category
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

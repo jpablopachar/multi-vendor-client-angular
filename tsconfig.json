@@ -7,7 +7,7 @@
       "@app/*": ["app/*"],
       "@src/*": ["*"]
     },
-    "outDir": "./dist/out-tsc",
+    "outDir": "./dist",
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
