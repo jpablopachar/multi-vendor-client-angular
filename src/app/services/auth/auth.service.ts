@@ -16,41 +16,47 @@ import { Observable } from 'rxjs'
 export class AuthService {
   private _http: HttpClient = inject(HttpClient);
 
-  private _url = `${environment.apiUrl}/api`;
+  private _url = `${environment.apiUrl}/api/auth`;
 
   public adminLogin(body: LoginUser): Observable<AuthResponse> {
-    return this._http.post<AuthResponse>(`${this._url}/auth/admin-login`, body);
+    return this._http.post<AuthResponse>(`${this._url}/admin-login`, body);
   }
 
   public sellerLogin(body: LoginUser): Observable<AuthResponse> {
     return this._http.post<AuthResponse>(
-      `${this._url}/auth/seller-login`,
+      `${this._url}/seller-login`,
       body
     );
   }
 
   public sellerRegister(body: RegisterUser): Observable<AuthResponse> {
     return this._http.post<AuthResponse>(
-      `${this._url}/auth/seller-register`,
+      `${this._url}/seller-register`,
       body
     );
   }
 
   public getUserInfo(): Observable<UserInfoResponse> {
-    return this._http.get<UserInfoResponse>(`${this._url}/auth/get-user`);
+    return this._http.get<UserInfoResponse>(`${this._url}/get-user`);
   }
 
   public profileInfoAdd(body: ShopInfo): Observable<UserInfoResponse> {
     return this._http.post<UserInfoResponse>(
-      `${this._url}/auth/profile-info-add`,
+      `${this._url}/profile-info-add`,
       body
     );
   }
 
   public profileImageUpload(body: FormData): Observable<UserInfoResponse> {
     return this._http.post<UserInfoResponse>(
-      `${this._url}/auth/profile-image-upload`,
+      `${this._url}/profile-image-upload`,
       body
+    );
+  }
+
+  public logout(): Observable<{ message: string }> {
+    return this._http.get<{ message: string }>(
+      `${this._url}/logout`,
     );
   }
 }
