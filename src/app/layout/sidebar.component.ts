@@ -9,7 +9,7 @@ import {
   signal,
   WritableSignal,
 } from '@angular/core'
-import { Router, RouterLink } from '@angular/router'
+import { Router, RouterLink, RouterLinkActive } from '@angular/router'
 import { NavType } from '@app/models'
 import { getNav } from '@app/navigation'
 import { authActions, selectRole } from '@app/store/auth'
@@ -24,7 +24,7 @@ import { Subscription } from 'rxjs'
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLink, FontAwesomeModule],
+  imports: [CommonModule, RouterLink, RouterLinkActive, FontAwesomeModule],
   template: `<div>
     <div
       class="fixed duration-200 w-screen h-screen bg-[#8cbce780] top-0 left-0 z-10"
@@ -48,12 +48,9 @@ import { Subscription } from 'rxjs'
           <li>
             <a
               [routerLink]="nav.path"
+              routerLinkActive="bg-blue-600 shadow-indigo-500/50 text-white duration-500"
+              [routerLinkActiveOptions]="{ exact: true }"
               class="px-[12px] py-[9px] rounded-sm flex justify-start items-center gap-[12px] hover:pl-4 transition-all w-full mb-1"
-              [ngClass]="
-                router.url === nav.path
-                  ? 'bg-blue-600 shadow-indigo-500/50 text-white duration-500'
-                  : 'text-[#030811] font-bold duration-200'
-              "
             >
               <span>
                 <fa-icon [icon]="nav.icon"></fa-icon>

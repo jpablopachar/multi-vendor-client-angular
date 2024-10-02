@@ -39,6 +39,15 @@ export const SellerRoutes: Routes = [
     data: { role: 'seller', status: 'active' },
   },
   {
+    path: 'dashboard/discount-products',
+    loadComponent: () =>
+      import('../views/seller/discount-products.component').then(
+        (c) => c.DiscountProductsComponent
+      ),
+    canActivate: [protectRouteGuard],
+    data: { role: 'seller', status: 'active' },
+  },
+  {
     path: 'dashboard/profile',
     loadComponent: () =>
       import('../views/seller/profile.component').then(
