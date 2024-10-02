@@ -1,5 +1,6 @@
 export * from './auth'
 export * from './category'
+export * from './dashboard'
 export * from './order'
 export * from './product'
 export * from './seller'
