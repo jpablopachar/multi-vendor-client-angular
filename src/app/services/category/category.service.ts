@@ -15,7 +15,7 @@ import { Observable } from 'rxjs'
 export class CategoryService {
   private _http: HttpClient = inject(HttpClient);
 
-  private _url: string = `${environment.apiUrl}/api`;
+  private _url = `${environment.apiUrl}/api`;
 
   public categoryAdd(body: CategoryRequest): Observable<CategoryResponse> {
     const { name, image } = body;

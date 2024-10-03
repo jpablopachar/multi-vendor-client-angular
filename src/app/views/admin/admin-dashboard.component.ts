@@ -1,15 +1,34 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { CommonModule } from '@angular/common'
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Signal,
+  effect,
+  inject,
+} from '@angular/core'
 import { RouterLink } from '@angular/router'
-import { ApexChartTemplate } from '@app/models'
+import { ApexChartTemplate, InfoUser } from '@app/models'
+import { selectUserInfo } from '@app/store/auth'
+import {
+  dashboardActions,
+  selectMessages,
+  selectRecentOrders,
+  selectTotalOrders,
+  selectTotalProducts,
+  selectTotalSale,
+  selectTotalSellers,
+} from '@app/store/dashboard'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import {
+  IconDefinition,
   faCentSign,
   faDollarSign,
   faShoppingCart,
   faUser,
-  IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
+import { Store } from '@ngrx/store'
 import { NgApexchartsModule } from 'ng-apexcharts'
 
 @Component({
@@ -20,6 +39,21 @@ import { NgApexchartsModule } from 'ng-apexcharts'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDashboardComponent {
+  private readonly _store = inject(Store);
+
+  public $totalSale: Signal<number> = this._store.selectSignal(selectTotalSale);
+  public $totalOrders: Signal<number> =
+    this._store.selectSignal(selectTotalOrders);
+  public $totalProducts: Signal<number> =
+    this._store.selectSignal(selectTotalProducts);
+  public $totalSellers: Signal<number> =
+    this._store.selectSignal(selectTotalSellers);
+  public $recentOrders: Signal<any[]> =
+    this._store.selectSignal(selectRecentOrders);
+  public $messages: Signal<string[]> = this._store.selectSignal(selectMessages);
+
+  public $userInfo: Signal<InfoUser> = this._store.selectSignal(selectUserInfo) as Signal<InfoUser>;
+
   public state: ApexChartTemplate = {
     series: [
       {
@@ -118,4 +152,12 @@ export class AdminDashboardComponent {
   public faUser: IconDefinition = faUser;
 
   public numbers = [1, 2, 3, 4, 5];
+
+  constructor() {
+    effect((): void => {
+      this._store.dispatch(
+        dashboardActions.getAdminDashboardData({ role: 'admin' })
+      );
+    });
+  }
 }

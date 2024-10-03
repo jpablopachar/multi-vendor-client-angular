@@ -1,3 +1,5 @@
 export * as AuthStore from './auth'
 export * as CategoryStore from './category'
+export * as DashboardStore from './dashboard'
 export * as ProductStore from './product'
+export * as SellerStore from './seller'

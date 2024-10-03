@@ -2,7 +2,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http'
 import {
   ApplicationConfig,
   isDevMode,
-  provideExperimentalZonelessChangeDetection
+  provideExperimentalZonelessChangeDetection,
 } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
@@ -13,8 +13,21 @@ import { provideToastr } from 'ngx-toastr'
 import { routes } from './app.routes'
 import { cookiesInterceptor } from './interceptors'
 import { AuthEffects, authFeatureKey, authReducer } from './store/auth'
-import { CategoryEffects, categoryFeatureKey, categoryReducer } from './store/category'
-import { ProductEffects, productFeatureKey, productReducer } from './store/product'
+import {
+  CategoryEffects,
+  categoryFeatureKey,
+  categoryReducer,
+} from './store/category'
+import {
+  DashboardEffects,
+  dashboardFeatureKey,
+  dashboardReducer,
+} from './store/dashboard'
+import {
+  ProductEffects,
+  productFeatureKey,
+  productReducer,
+} from './store/product'
 import { SellerEffects, sellerFeatureKey, sellerReducer } from './store/seller'
 
 export const appConfig: ApplicationConfig = {
@@ -32,7 +45,14 @@ export const appConfig: ApplicationConfig = {
     provideState(categoryFeatureKey, categoryReducer),
     provideState(productFeatureKey, productReducer),
     provideState(sellerFeatureKey, sellerReducer),
-    provideEffects(AuthEffects, CategoryEffects, ProductEffects, SellerEffects),
+    provideState(dashboardFeatureKey, dashboardReducer),
+    provideEffects(
+      AuthEffects,
+      CategoryEffects,
+      ProductEffects,
+      SellerEffects,
+      DashboardEffects
+    ),
     provideStoreDevtools({
       maxAge: 25,
       logOnly: !isDevMode(),
