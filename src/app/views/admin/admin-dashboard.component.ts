@@ -52,7 +52,9 @@ export class AdminDashboardComponent {
     this._store.selectSignal(selectRecentOrders);
   public $messages: Signal<string[]> = this._store.selectSignal(selectMessages);
 
-  public $userInfo: Signal<InfoUser> = this._store.selectSignal(selectUserInfo) as Signal<InfoUser>;
+  public $userInfo: Signal<InfoUser> = this._store.selectSignal(
+    selectUserInfo
+  ) as Signal<InfoUser>;
 
   public state: ApexChartTemplate = {
     series: [
@@ -154,10 +156,13 @@ export class AdminDashboardComponent {
   public numbers = [1, 2, 3, 4, 5];
 
   constructor() {
-    effect((): void => {
-      this._store.dispatch(
-        dashboardActions.getAdminDashboardData({ role: 'admin' })
-      );
-    });
+    effect(
+      (): void => {
+        this._store.dispatch(
+          dashboardActions.getAdminDashboardData({ role: 'admin' })
+        );
+      },
+      { allowSignalWrites: true }
+    );
   }
 }
