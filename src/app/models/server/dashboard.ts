@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export interface GetDashboardDataResponse {
-  messages: string[];
+  messages: any[];
   recentOrders: any[];
   totalOrders: number;
   totalProducts: number;

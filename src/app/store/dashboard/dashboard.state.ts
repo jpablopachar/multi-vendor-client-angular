@@ -7,5 +7,5 @@ export interface DashboardState {
   totalPendingOrders: number;
   totalSellers: number;
   recentOrders: any[];
-  messages: string[];
+  messages: any[];
 }

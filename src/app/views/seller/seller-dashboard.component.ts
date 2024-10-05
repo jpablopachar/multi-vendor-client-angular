@@ -10,6 +10,7 @@ import {
 } from '@angular/core'
 import { RouterLink } from '@angular/router'
 import { ApexChartTemplate, InfoUser } from '@app/models'
+import { FromNowPipe } from '@app/pipes'
 import { selectUserInfo } from '@app/store/auth'
 import {
   dashboardActions,
@@ -34,7 +35,13 @@ import { NgApexchartsModule } from 'ng-apexcharts'
 @Component({
   selector: 'app-seller-dashboard',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule, FontAwesomeModule, RouterLink],
+  imports: [
+    CommonModule,
+    NgApexchartsModule,
+    FontAwesomeModule,
+    RouterLink,
+    FromNowPipe,
+  ],
   templateUrl: './seller-dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -46,11 +53,12 @@ export class SellerDashboardComponent {
     this._store.selectSignal(selectTotalOrders);
   public $totalProducts: Signal<number> =
     this._store.selectSignal(selectTotalProducts);
-  public $totalTotalPendingOrders: Signal<number> =
-    this._store.selectSignal(selectTotalPendingOrders);
+  public $totalPendingOrders: Signal<number> = this._store.selectSignal(
+    selectTotalPendingOrders
+  );
   public $recentOrders: Signal<any[]> =
     this._store.selectSignal(selectRecentOrders);
-  public $messages: Signal<string[]> = this._store.selectSignal(selectMessages);
+  public $messages: Signal<any[]> = this._store.selectSignal(selectMessages);
 
   public $userInfo: Signal<InfoUser> = this._store.selectSignal(
     selectUserInfo
