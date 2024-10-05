@@ -7,7 +7,7 @@ import {
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
 import { provideEffects } from '@ngrx/effects'
-import { provideState, provideStore } from '@ngrx/store'
+import { provideStore } from '@ngrx/store'
 import { provideStoreDevtools } from '@ngrx/store-devtools'
 import { provideToastr } from 'ngx-toastr'
 import { routes } from './app.routes'
@@ -18,6 +18,7 @@ import {
   categoryFeatureKey,
   categoryReducer,
 } from './store/category'
+import { ChatEffects, chatFeatureKey, chatReducer } from './store/chat'
 import {
   DashboardEffects,
   dashboardFeatureKey,
@@ -40,18 +41,21 @@ export const appConfig: ApplicationConfig = {
     }),
     provideRouter(routes),
     provideHttpClient(withInterceptors([cookiesInterceptor])),
-    provideStore(),
-    provideState(authFeatureKey, authReducer),
-    provideState(categoryFeatureKey, categoryReducer),
-    provideState(productFeatureKey, productReducer),
-    provideState(sellerFeatureKey, sellerReducer),
-    provideState(dashboardFeatureKey, dashboardReducer),
+    provideStore({
+      [authFeatureKey]: authReducer,
+      [categoryFeatureKey]: categoryReducer,
+      [productFeatureKey]: productReducer,
+      [sellerFeatureKey]: sellerReducer,
+      [dashboardFeatureKey]: dashboardReducer,
+      [chatFeatureKey]: chatReducer,
+    }),
     provideEffects(
       AuthEffects,
       CategoryEffects,
+      ChatEffects,
+      DashboardEffects,
       ProductEffects,
-      SellerEffects,
-      DashboardEffects
+      SellerEffects
     ),
     provideStoreDevtools({
       maxAge: 25,
