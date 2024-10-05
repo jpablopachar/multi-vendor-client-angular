@@ -1,7 +1,7 @@
 import {
-  GetSellersResponse,
+  GetSellerMessagesResponse,
   SellerAdminMessageRequest,
-  SellerAdminMessageResponse
+  SellerAdminMessageResponse,
 } from '@app/models'
 import { createActionGroup, emptyProps, props } from '@ngrx/store'
 
@@ -10,8 +10,8 @@ export const chatActions = createActionGroup({
   events: {
     messageClear: emptyProps(),
     updateMessage: emptyProps(),
-    getSellers: emptyProps(),
-    getSellersSuccess: props<{ response: GetSellersResponse }>(),
+    getSellerMessage: emptyProps(),
+    getSellerMessagesSuccess: props<{ response: GetSellerMessagesResponse }>(),
     sendMessageSellerAdmin: props<{ request: SellerAdminMessageRequest }>(),
     sendMessageSellerAdminSuccess: props<{
       response: SellerAdminMessageResponse;

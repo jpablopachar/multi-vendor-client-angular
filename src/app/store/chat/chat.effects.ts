@@ -1,7 +1,7 @@
 import { inject } from '@angular/core'
 import {
-  GetSellersResponse,
-  SellerAdminMessageResponse
+  GetSellerMessagesResponse,
+  SellerAdminMessageResponse,
 } from '@app/models'
 import { ChatService } from '@app/services'
 import { Actions, createEffect, ofType } from '@ngrx/effects'
@@ -14,11 +14,11 @@ export const getSellersEffect = createEffect(
     chatService: ChatService = inject(ChatService)
   ) => {
     return actions$.pipe(
-      ofType(chatActions.getSellers),
+      ofType(chatActions.getSellerMessage),
       switchMap(() => {
-        return chatService.getSellers().pipe(
-          map((response: GetSellersResponse) => {
-            return chatActions.getSellersSuccess({ response });
+        return chatService.getSellerMessages().pipe(
+          map((response: GetSellerMessagesResponse) => {
+            return chatActions.getSellerMessagesSuccess({ response });
           })
         );
       })

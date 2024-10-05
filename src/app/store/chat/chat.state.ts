@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { SellerMessage } from "@app/models"
+
 export interface ChatState {
   successMessage: string;
   errorMessage: string;
@@ -12,5 +14,5 @@ export interface ChatState {
   sellerAdminMessages: any[];
   currentSeller: any;
   currentCustomer: any;
-  sellers: any[];
+  sellers: SellerMessage[];
 }

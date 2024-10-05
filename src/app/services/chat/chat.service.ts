@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
 import {
-  GetSellersResponse,
+  GetSellerMessagesResponse,
   SellerAdminMessageRequest,
   SellerAdminMessageResponse,
 } from '@app/models'
@@ -16,8 +16,10 @@ export class ChatService {
 
   private _url = `${environment.apiUrl}/api/chat`;
 
-  public getSellers(): Observable<GetSellersResponse> {
-    return this._http.get<GetSellersResponse>(`${this._url}/admin/get-sellers`);
+  public getSellerMessages(): Observable<GetSellerMessagesResponse> {
+    return this._http.get<GetSellerMessagesResponse>(
+      `${this._url}/get-seller-messages`
+    );
   }
 
   public sendMessageSellerAdmin(

@@ -26,10 +26,10 @@ const chatFeature = createFeature({
       errorMessage: '',
       successMessage: '',
     })),
-    on(chatActions.getSellers, (state: ChatState) => ({
+    on(chatActions.getSellerMessage, (state: ChatState) => ({
       ...state,
     })),
-    on(chatActions.getSellersSuccess, (state: ChatState, { response }) => ({
+    on(chatActions.getSellerMessagesSuccess, (state: ChatState, { response }) => ({
       ...state,
       sellers: response.messages,
     })),

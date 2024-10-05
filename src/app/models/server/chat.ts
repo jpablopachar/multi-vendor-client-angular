@@ -1,4 +1,4 @@
-export interface GetSellersResponse {
+export interface GetSellerMessagesResponse {
   messages: SellerMessage[];
 }
 
