@@ -48,6 +48,69 @@ export const SellerRoutes: Routes = [
     data: { role: 'seller', status: 'active' },
   },
   {
+    path: 'dashboard/orders',
+    loadComponent: () =>
+      import('../views/seller/orders-seller.component').then(
+        (c) => c.OrdersSellerComponent
+      ),
+    canActivate: [protectRouteGuard],
+    data: { role: 'seller', visibility: ['active', 'deactive'] },
+  },
+  {
+    path: 'dashboard/order/details/:orderId',
+    loadComponent: () =>
+      import('../views/seller/order-details-seller.component').then(
+        (c) => c.OrderDetailsSellerComponent
+      ),
+    canActivate: [protectRouteGuard],
+    data: { role: 'seller', visibility: ['active', 'deactive'] },
+  },
+  {
+    path: 'dashboard/payments',
+    loadComponent: () =>
+      import('../views/seller/payments.component').then(
+        (c) => c.PaymentsComponent
+      ),
+    canActivate: [protectRouteGuard],
+    data: { role: 'seller', status: 'active' },
+  },
+  {
+    path: 'dashboard/chat-support',
+    loadComponent: () =>
+      import('../views/seller/seller-to-admin.component').then(
+        (c) => c.SellerToAdminComponent
+      ),
+    canActivate: [protectRouteGuard],
+    data: { role: 'seller', visibility: ['active', 'deactive', 'pending'] },
+  },
+  {
+    path: 'dashboard/chat-customer',
+    loadComponent: () =>
+      import('../views/seller/seller-to-customer.component').then(
+        (c) => c.SellerToCustomerComponent
+      ),
+    canActivate: [protectRouteGuard],
+    data: { role: 'seller', status: 'active' },
+  },
+  {
+    path: 'dashboard/chat-customer/:customerId',
+    loadComponent: () =>
+      import('../views/seller/seller-to-customer.component').then(
+        (c) => c.SellerToCustomerComponent
+      ),
+    canActivate: [protectRouteGuard],
+    data: { role: 'seller', status: 'active' },
+  },
+  {
+    path: 'dashboard/add-banner/:productId',
+    loadComponent: () =>
+      import('../views/seller/add-banner.component').then(
+        (c) => c.AddBannerComponent
+      ),
+    canActivate: [protectRouteGuard],
+    data: { role: 'seller', status: 'active' },
+  },
+  {
     path: 'dashboard/profile',
     loadComponent: () =>
       import('../views/seller/profile.component').then(
