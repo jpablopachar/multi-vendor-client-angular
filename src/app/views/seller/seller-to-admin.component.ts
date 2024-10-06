@@ -11,6 +11,7 @@ import {
   signal,
 } from '@angular/core'
 import { InfoUser } from '@app/models'
+import { SocketService } from '@app/services'
 import { selectUserInfo } from '@app/store/auth'
 import {
   chatActions,
@@ -31,6 +32,7 @@ import { Store } from '@ngrx/store'
 })
 export class SellerToAdminComponent implements OnInit {
   private readonly _store = inject(Store);
+  private readonly _socketService: SocketService = inject(SocketService);
 
   public $sellers: Signal<any[]> = this._store.selectSignal(selectSellers);
   public $activeSellers: Signal<any[]> =
@@ -51,5 +53,10 @@ export class SellerToAdminComponent implements OnInit {
 
   ngOnInit(): void {
     this._store.dispatch(chatActions.getSellerMessage());
+
+    this._socketService.on('receiverAdminMessage', (message: any): void => {
+      console.log('receiverAdminMessage', message);
+      // this._store.dispatch(chatActions.updateAdminMessage({ message }));
+    });
   }
 }

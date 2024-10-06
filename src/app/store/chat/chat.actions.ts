@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import {
   GetSellerMessagesResponse,
   SellerAdminMessageRequest,
@@ -10,6 +12,7 @@ export const chatActions = createActionGroup({
   events: {
     messageClear: emptyProps(),
     updateMessage: emptyProps(),
+    updateAdminMessage: props<{ message: any }>(),
     getSellerMessage: emptyProps(),
     getSellerMessagesSuccess: props<{ response: GetSellerMessagesResponse }>(),
     sendMessageSellerAdmin: props<{ request: SellerAdminMessageRequest }>(),
