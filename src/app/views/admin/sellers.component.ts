@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common'
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   Signal,
@@ -28,9 +29,9 @@ import { PaginationComponent } from '../pagination.component'
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterLink, PaginationComponent],
   templateUrl: './sellers.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
-export class SellersComponent {
+export class SellersComponent implements AfterViewInit {
   private readonly _store = inject(Store);
 
   public $sellers: Signal<InfoUser[]> = this._store.selectSignal(selectSellers);
@@ -40,22 +41,31 @@ export class SellersComponent {
   public $currentPage: WritableSignal<number> = signal(1);
   public $searchValue: WritableSignal<string> = signal('');
   public $parPage: WritableSignal<number> = signal(5);
-  public $show: WritableSignal<boolean> = signal(false);
+  public $isLoading: WritableSignal<boolean> = signal(false);
 
   public faEye: IconDefinition = faEye;
 
   constructor() {
-    effect(() => {
-      if (this.$searchValue() || this.$currentPage() || this.$parPage()) {
-        const payload = {
-          parPage: this.$parPage(),
-          page: this.$currentPage(),
-          searchValue: this.$searchValue(),
-        };
+    effect(
+      (): void => {
+        if (this.$searchValue() || this.$currentPage() || this.$parPage()) {
+          const payload = {
+            parPage: this.$parPage(),
+            page: this.$currentPage(),
+            searchValue: this.$searchValue(),
+          };
 
-        this._store.dispatch(sellerActions.getActiveSellers({ payload }));
-      }
-    });
+          console.log('payload', payload);
+
+          this._store.dispatch(sellerActions.getActiveSellers({ payload }));
+        }
+      },
+      { allowSignalWrites: true }
+    );
+  }
+
+  ngAfterViewInit(): void {
+    this.$isLoading.set(true);
   }
 
   public changeValue(type: string, event: Event): void {

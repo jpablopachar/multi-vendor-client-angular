@@ -114,13 +114,14 @@
         </div>
         @if ($totalSellers() <= $parPage()) {
         <div class="w-full flex justify-end mt-4 bottom-4 right-4">
-            <!-- TODO: <app-pagination
+            <h1>Hola</h1>
+            <app-pagination
                 [$pageNumber]="$currentPage()"
                 [$totalItem]="$totalSellers()"
                 [$parPage]="$parPage()"
                 [$showItem]="4"
                 (setPageNumber)="$currentPage.set($event)"
-            ></app-pagination> -->
+            ></app-pagination>
         </div>
         }
     </div>
