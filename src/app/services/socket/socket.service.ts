@@ -15,7 +15,7 @@ export class SocketService {
     this._socket = io(this._url);
   }
 
-  emit(eventName: string, data: any, data2?: any): void {
+  public emit(eventName: string, data: any, data2?: any): void {
     if (data2) {
       this._socket.emit(eventName, data, data2);
     } else {
@@ -23,11 +23,11 @@ export class SocketService {
     }
   }
 
-  on(eventName: string, callback: (...args: any[]) => void): void {
+  public on(eventName: string, callback: (...args: any[]) => void): void {
     this._socket.on(eventName, callback);
   }
 
-  off(eventName: string, callback?: (...args: any[]) => void): void {
+  public off(eventName: string, callback?: (...args: any[]) => void): void {
     this._socket.off(eventName, callback);
   }
 }
