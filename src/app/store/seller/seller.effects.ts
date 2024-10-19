@@ -2,7 +2,7 @@ import { inject } from '@angular/core'
 import {
   InfoUser,
   SellerListResponse,
-  SellerStatusUpdateResponse
+  SellerStatusUpdateResponse,
 } from '@app/models'
 import { SellerService } from '@app/services'
 import { Actions, createEffect, ofType } from '@ngrx/effects'
@@ -58,6 +58,25 @@ export const sellerStatusUpdateEffect = createEffect(
         return sellerService.sellerStatusUpdate(body).pipe(
           map((response: SellerStatusUpdateResponse) => {
             return sellerActions.sellerStatusUpdateSuccess({ response });
+          })
+        );
+      })
+    );
+  },
+  { functional: true }
+);
+
+export const getActiveSellersEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    sellerService: SellerService = inject(SellerService)
+  ) => {
+    return actions$.pipe(
+      ofType(sellerActions.getActiveSellers),
+      switchMap(({ payload }) => {
+        return sellerService.getActiveSellers(payload).pipe(
+          map((response: SellerListResponse) => {
+            return sellerActions.getActiveSellersSuccess({ response });
           })
         );
       })

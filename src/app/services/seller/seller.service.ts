@@ -15,7 +15,7 @@ import { Observable } from 'rxjs'
 export class SellerService {
   private _http: HttpClient = inject(HttpClient);
 
-  private _url: string = `${environment.apiUrl}/api`;
+  private _url = `${environment.apiUrl}/api`;
 
   public getSellers(payload: Payload): Observable<SellerListResponse> {
     const { page, parPage, searchValue } = payload;
@@ -37,6 +37,14 @@ export class SellerService {
     return this._http.post<SellerStatusUpdateResponse>(
       `${this._url}/seller-status-update`,
       body
+    );
+  }
+
+  public getActiveSellers(payload: Payload): Observable<SellerListResponse> {
+    const { page, parPage, searchValue } = payload;
+
+    return this._http.get<SellerListResponse>(
+      `${this._url}/get-sellers?page=${page}&&searchValue=${searchValue}&&parPage=${parPage}`
     );
   }
 }
