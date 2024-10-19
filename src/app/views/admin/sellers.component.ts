@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common'
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   Signal,
@@ -29,9 +28,9 @@ import { PaginationComponent } from '../pagination.component'
   standalone: true,
   imports: [CommonModule, FontAwesomeModule, RouterLink, PaginationComponent],
   templateUrl: './sellers.component.html',
-  changeDetection: ChangeDetectionStrategy.Default,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SellersComponent implements AfterViewInit {
+export class SellersComponent {
   private readonly _store = inject(Store);
 
   public $sellers: Signal<InfoUser[]> = this._store.selectSignal(selectSellers);
@@ -41,7 +40,6 @@ export class SellersComponent implements AfterViewInit {
   public $currentPage: WritableSignal<number> = signal(1);
   public $searchValue: WritableSignal<string> = signal('');
   public $parPage: WritableSignal<number> = signal(5);
-  public $isLoading: WritableSignal<boolean> = signal(false);
 
   public faEye: IconDefinition = faEye;
 
@@ -55,17 +53,11 @@ export class SellersComponent implements AfterViewInit {
             searchValue: this.$searchValue(),
           };
 
-          console.log('payload', payload);
-
           this._store.dispatch(sellerActions.getActiveSellers({ payload }));
         }
       },
       { allowSignalWrites: true }
     );
-  }
-
-  ngAfterViewInit(): void {
-    this.$isLoading.set(true);
   }
 
   public changeValue(type: string, event: Event): void {

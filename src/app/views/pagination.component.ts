@@ -2,23 +2,24 @@ import { CommonModule } from '@angular/common'
 import {
   ChangeDetectionStrategy,
   Component,
-  // ComponentRef,
+  ComponentRef,
   EventEmitter,
   InputSignal,
   Output,
   Renderer2,
   ViewChild,
   ViewContainerRef,
-  // effect,
+  effect,
   inject,
-  input
+  input,
 } from '@angular/core'
 import {
-  // FaIconComponent,
+  FaIconComponent,
   FontAwesomeModule,
+  IconDefinition,
 } from '@fortawesome/angular-fontawesome'
-// import { library } from '@fortawesome/fontawesome-svg-core'
-// import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-pagination',
@@ -40,13 +41,10 @@ export class PaginationComponent {
 
   private _renderer: Renderer2 = inject(Renderer2);
 
-  /* public $totalPage: WritableSignal<number> = signal(0);
-  public $startPage: WritableSignal<number> = signal(0);
-  public $endPage: WritableSignal<number> = signal(0);
+  public totalPage!: number;
+  public startPage!: number;
+  public endPage!: number;
 
-  public totalPage: number = Math.ceil(this.$totalItem() / this.$parPage());
-  public startPage: number = this.$pageNumber();
-  public endPage: number = this.startPage < 0 ? this.$showItem() : this.$showItem() + this.startPage;
   public faAngleRight: IconDefinition = faAngleRight;
   public faAngleLeft: IconDefinition = faAngleLeft;
 
@@ -55,23 +53,24 @@ export class PaginationComponent {
 
     effect(
       (): void => {
-        this.$totalPage.set(Math.ceil(this.$totalItem() / this.$parPage()));
-        this.$startPage.set(this.$pageNumber());
+        if (this.$pageNumber() || this.$totalItem() || this.$parPage()) {
+          this.totalPage = Math.ceil(this.$totalItem() / this.$parPage());
+          this.startPage = this.$pageNumber();
 
-        const dif: number = this.$totalPage() - this.$pageNumber();
+          const dif: number = this.totalPage - this.startPage;
 
-        if (dif <= this.$showItem())
-          this.$startPage.set(this.$totalPage() - this.$showItem());
+          if (dif <= this.$showItem())
+            this.startPage = this.totalPage - this.$showItem();
 
-        this.$endPage.set(
-          this.$startPage() < 0
-            ? this.$showItem()
-            : this.$showItem() + this.$startPage()
-        );
+          this.endPage =
+            this.startPage < 0
+              ? this.$showItem()
+              : this.$showItem() + this.startPage;
 
-        if (this.$startPage() <= 0) this.$startPage.set(1);
+          if (this.startPage <= 0) this.startPage = 1;
 
-        this._generateBtns();
+          this._generateBtns();
+        }
       },
       { allowSignalWrites: true }
     );
@@ -84,7 +83,7 @@ export class PaginationComponent {
 
     this._insertDynamicItems();
 
-    if (this.$pageNumber() < this.$totalPage()) this._nextButton();
+    if (this.$pageNumber() < this.totalPage) this._nextButton();
   }
 
   private _clearItems(): void {
@@ -138,15 +137,18 @@ export class PaginationComponent {
   }
 
   private _insertDynamicItems(): void {
-    console.log('this.startPage', this.startPage);
-    console.log('this.endPage', this.endPage);
-    for (let i: number = this.$startPage(); i < this.$endPage(); i++) {
-      const isCurrentPage = this.$pageNumber() === i;
+    for (let i: number = this.startPage; i < this.endPage; i++) {
+      const isCurrentPage: boolean = this.$pageNumber() === i;
       const classes = isCurrentPage
         ? 'bg-indigo-300 shadow-lg shadow-indigo-300/50 text-white'
         : 'bg-slate-600 hover:bg-indigo-400 shadow-lg hover:shadow-indigo-500/50 hover:text-white text-[#d0d2d6]';
 
-      this._createButton(null, i, () => this.setPageNumber.emit(i), classes);
+      this._createButton(
+        null,
+        i,
+        (): void => this.setPageNumber.emit(i),
+        classes
+      );
     }
   }
 
@@ -154,8 +156,8 @@ export class PaginationComponent {
     this._createButton(
       this.faAngleRight,
       null,
-      () => this.setPageNumber.emit(this.$pageNumber() + 1),
+      (): void => this.setPageNumber.emit(this.$pageNumber() + 1),
       'bg-slate-300 text-[#000000]'
     );
-  } */
+  }
 }
