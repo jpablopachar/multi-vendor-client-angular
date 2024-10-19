@@ -184,7 +184,7 @@ export class RegisterComponent implements OnDestroy {
   public submit(): void {
     if (this.registerForm.valid) {
       this._store.dispatch(
-        authActions.sellerLogin({ request: this.registerForm.getRawValue() })
+        authActions.sellerRegister({ request: this.registerForm.getRawValue() })
       );
     }
   }
