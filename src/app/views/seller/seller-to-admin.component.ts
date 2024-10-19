@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { CommonModule } from '@angular/common'
 import {
   ChangeDetectionStrategy,
@@ -12,18 +10,15 @@ import {
   WritableSignal,
   effect,
   inject,
-  signal
+  signal,
 } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { InfoUser, SellerAdminMessageRequest } from '@app/models'
+import { InfoUser, Message, SellerAdminMessageRequest } from '@app/models'
 import { SocketService } from '@app/services'
 import { selectUserInfo } from '@app/store/auth'
 import {
   chatActions,
-  selectActiveSellers,
-  selectCurrentSeller,
   selectSellerAdminMessages,
-  selectSellers,
   selectSuccessMessage,
 } from '@app/store/chat'
 import { Store } from '@ngrx/store'
@@ -39,17 +34,12 @@ export class SellerToAdminComponent implements OnInit {
   @ViewChild('scrollRef') scrollRef!: ElementRef | undefined;
 
   private readonly _store = inject(Store);
-  private readonly _cdr = inject(ChangeDetectorRef);
+  private readonly _cdr: ChangeDetectorRef = inject(ChangeDetectorRef);
   private readonly _socketService: SocketService = inject(SocketService);
 
-  public $sellers: Signal<any[]> = this._store.selectSignal(selectSellers);
-  public $activeSellers: Signal<any[]> =
-    this._store.selectSignal(selectActiveSellers);
-  public $sellerAdminMessage: Signal<any[]> = this._store.selectSignal(
+  public $sellerAdminMessage: Signal<Message[]> = this._store.selectSignal(
     selectSellerAdminMessages
   );
-  public $currentSeller: Signal<any[]> =
-    this._store.selectSignal(selectCurrentSeller);
   public $successMessage: Signal<string> =
     this._store.selectSignal(selectSuccessMessage);
 
@@ -58,7 +48,6 @@ export class SellerToAdminComponent implements OnInit {
   ) as Signal<InfoUser>;
 
   public $text: WritableSignal<string> = signal('');
-  public $isLoading: WritableSignal<boolean> = signal(false);
 
   constructor() {
     effect(
@@ -91,7 +80,7 @@ export class SellerToAdminComponent implements OnInit {
   ngOnInit(): void {
     this._store.dispatch(chatActions.getSellerMessage());
 
-    this._socketService.on('receiverAdminMessage', (message: any): void => {
+    this._socketService.on('receiverAdminMessage', (message: Message): void => {
       this._store.dispatch(chatActions.updateAdminMessage({ message }));
     });
   }

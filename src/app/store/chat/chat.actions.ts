@@ -2,6 +2,7 @@
 
 import {
   GetSellerMessagesResponse,
+  Message,
   SellerAdminMessageRequest,
   SellerAdminMessageResponse,
 } from '@app/models'
@@ -14,7 +15,7 @@ export const chatActions = createActionGroup({
     updateMessage: emptyProps(),
     updateSellers: props<{ payload: any }>(),
     updateCustomers: props<{ payload: any }>(),
-    updateAdminMessage: props<{ message: any }>(),
+    updateAdminMessage: props<{ message: Message }>(),
     getSellerMessage: emptyProps(),
     getSellerMessagesSuccess: props<{ response: GetSellerMessagesResponse }>(),
     sendMessageSellerAdmin: props<{ request: SellerAdminMessageRequest }>(),

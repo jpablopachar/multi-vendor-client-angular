@@ -25,7 +25,7 @@
                         class="bg-[#475569] h-[calc(100vh-290px)] rounded-md p-3 overflow-y-auto"
                     >
                         @for (currentMessage of $sellerAdminMessage(); track
-                        currentMessage;) { @if ($userInfo()._id ===
+                        currentMessage._id;) { @if ($userInfo()._id ===
                         currentMessage.senderId) {
                         <div
                             class="w-full flex justify-start items-center"

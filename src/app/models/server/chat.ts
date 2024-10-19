@@ -1,8 +1,10 @@
+import { InfoUser } from "./auth"
+
 export interface GetSellerMessagesResponse {
-  messages: SellerMessage[];
+  messages: Message[];
 }
 
-export interface SellerMessage {
+export interface Message {
   _id: string;
   senderName: string;
   senderId: string;
@@ -21,5 +23,10 @@ export interface SellerAdminMessageRequest {
 }
 
 export interface SellerAdminMessageResponse {
-  message: SellerMessage;
+  message: Message;
+}
+
+export interface ActiveSeller {
+  socketId: string;
+  userInfo: InfoUser;
 }
