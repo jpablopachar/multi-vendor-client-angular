@@ -12,6 +12,8 @@ export const chatActions = createActionGroup({
   events: {
     messageClear: emptyProps(),
     updateMessage: emptyProps(),
+    updateSellers: props<{ payload: any }>(),
+    updateCustomers: props<{ payload: any }>(),
     updateAdminMessage: props<{ message: any }>(),
     getSellerMessage: emptyProps(),
     getSellerMessagesSuccess: props<{ response: GetSellerMessagesResponse }>(),

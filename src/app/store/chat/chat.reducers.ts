@@ -26,6 +26,14 @@ const chatFeature = createFeature({
       errorMessage: '',
       successMessage: '',
     })),
+    on(chatActions.updateSellers, (state: ChatState, { payload }) => ({
+      ...state,
+      activeSellers: payload,
+    })),
+    on(chatActions.updateCustomers, (state: ChatState, { payload }) => ({
+      ...state,
+      activeCustomers: payload,
+    })),
     on(chatActions.updateAdminMessage, (state: ChatState, { message }) => ({
       ...state,
       sellerAdminMessages: [...state.sellerAdminMessages, message],
@@ -37,7 +45,7 @@ const chatFeature = createFeature({
       chatActions.getSellerMessagesSuccess,
       (state: ChatState, { response }) => ({
         ...state,
-        sellers: response.messages,
+        sellerAdminMessages: response.messages,
       })
     ),
     on(chatActions.sendMessageSellerAdmin, (state: ChatState) => ({

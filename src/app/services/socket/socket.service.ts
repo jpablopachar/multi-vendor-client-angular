@@ -15,8 +15,12 @@ export class SocketService {
     this._socket = io(this._url);
   }
 
-  emit(eventName: string, data: any): void {
-    this._socket.emit(eventName, data);
+  emit(eventName: string, data: any, data2?: any): void {
+    if (data2) {
+      this._socket.emit(eventName, data, data2);
+    } else {
+      this._socket.emit(eventName, data);
+    }
   }
 
   on(eventName: string, callback: (...args: any[]) => void): void {
