@@ -24,6 +24,7 @@ import {
   dashboardFeatureKey,
   dashboardReducer,
 } from './store/dashboard'
+import { OrderEffects, orderFeatureKey, orderReducer } from './store/order'
 import {
   ProductEffects,
   productFeatureKey,
@@ -48,6 +49,7 @@ export const appConfig: ApplicationConfig = {
       [sellerFeatureKey]: sellerReducer,
       [dashboardFeatureKey]: dashboardReducer,
       [chatFeatureKey]: chatReducer,
+      [orderFeatureKey]: orderReducer,
     }),
     provideEffects(
       AuthEffects,
@@ -55,7 +57,8 @@ export const appConfig: ApplicationConfig = {
       ChatEffects,
       DashboardEffects,
       ProductEffects,
-      SellerEffects
+      SellerEffects,
+      OrderEffects,
     ),
     provideStoreDevtools({
       maxAge: 25,

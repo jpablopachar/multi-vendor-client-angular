@@ -17,6 +17,12 @@ export const AdminRoutes: Routes = [
         data: { role: 'admin' }
       },
       {
+        path: 'dashboard/orders',
+        loadComponent: () => import('../views/admin/orders.component').then(c => c.OrdersComponent),
+        canActivate: [protectRouteGuard],
+        data: { role: 'admin' }
+      },
+      {
         path: 'dashboard/category',
         loadComponent: () => import('../views/admin/category.component').then(c => c.CategoryComponent),
         canActivate: [protectRouteGuard],
