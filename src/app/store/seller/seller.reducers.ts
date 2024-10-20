@@ -67,6 +67,20 @@ const sellerFeature = createFeature({
         totalSellers: response.totalSellers,
       })
     ),
+    on(
+      sellerActions.getDeactiveSellers,
+      (state: SellerState) => ({
+        ...state,
+      })
+    ),
+    on(
+      sellerActions.getDeactiveSellersSuccess,
+      (state: SellerState, { response }) => ({
+        ...state,
+        sellers: response.sellers,
+        totalSellers: response.totalSellers,
+      })
+    ),
   ),
 });
 

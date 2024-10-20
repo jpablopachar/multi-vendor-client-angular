@@ -19,6 +19,8 @@ export const sellerActions = createActionGroup({
       response: SellerStatusUpdateResponse;
     }>(),
     getActiveSellers: props<{ payload: Payload }>(),
-    getActiveSellersSuccess: props<{ response: SellerListResponse }>()
+    getActiveSellersSuccess: props<{ response: SellerListResponse }>(),
+    getDeactiveSellers: props<{ payload: Payload }>(),
+    getDeactiveSellersSuccess: props<{ response: SellerListResponse }>(),
   },
 });

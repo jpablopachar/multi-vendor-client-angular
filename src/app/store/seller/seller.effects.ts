@@ -84,3 +84,22 @@ export const getActiveSellersEffect = createEffect(
   },
   { functional: true }
 );
+
+export const getDeactiveSellersEffects = createEffect(
+  (
+    actions$ = inject(Actions),
+    sellerService: SellerService = inject(SellerService)
+  ) => {
+    return actions$.pipe(
+      ofType(sellerActions.getDeactiveSellers),
+      switchMap(({ payload }) => {
+        return sellerService.getDeactiveSellers(payload).pipe(
+          map((response: SellerListResponse) => {
+            return sellerActions.getDeactiveSellersSuccess({ response });
+          })
+        );
+      })
+    );
+  },
+  { functional: true }
+);
