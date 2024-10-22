@@ -38,6 +38,10 @@ const chatFeature = createFeature({
       ...state,
       sellerAdminMessages: [...state.sellerAdminMessages, message],
     })),
+    on(chatActions.updateSellerMessage, (state: ChatState, { message }) => ({
+      ...state,
+      sellerAdminMessages: [...state.sellerAdminMessages, message],
+    })),
     on(chatActions.getSellerMessage, (state: ChatState) => ({
       ...state,
     })),
@@ -48,6 +52,13 @@ const chatFeature = createFeature({
         sellerAdminMessages: response.messages,
       })
     ),
+    on(chatActions.getSellers, (state: ChatState) => ({
+      ...state,
+    })),
+    on(chatActions.getSellersSuccess, (state: ChatState, { response }) => ({
+      ...state,
+      sellers: response.sellers,
+    })),
     on(chatActions.sendMessageSellerAdmin, (state: ChatState) => ({
       ...state,
     })),

@@ -8,7 +8,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects'
 import { map, switchMap } from 'rxjs'
 import { chatActions } from './chat.actions'
 
-export const getSellersEffect = createEffect(
+export const getSellerMessageEffect = createEffect(
   (
     actions$ = inject(Actions),
     chatService: ChatService = inject(ChatService)
@@ -19,6 +19,25 @@ export const getSellersEffect = createEffect(
         return chatService.getSellerMessages().pipe(
           map((response: GetSellerMessagesResponse) => {
             return chatActions.getSellerMessagesSuccess({ response });
+          })
+        );
+      })
+    );
+  },
+  { functional: true }
+);
+
+export const getSellersEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    chatService: ChatService = inject(ChatService)
+  ) => {
+    return actions$.pipe(
+      ofType(chatActions.getSellers),
+      switchMap(() => {
+        return chatService.getSellers().pipe(
+          map((response) => {
+            return chatActions.getSellersSuccess({ response });
           })
         );
       })

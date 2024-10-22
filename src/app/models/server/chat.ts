@@ -4,6 +4,10 @@ export interface GetSellerMessagesResponse {
   messages: Message[];
 }
 
+export interface GetSellersResponse {
+  sellers: InfoUser[];
+}
+
 export interface Message {
   _id: string;
   senderName: string;
