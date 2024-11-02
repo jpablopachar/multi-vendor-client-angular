@@ -1,4 +1,4 @@
- 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { HttpClient } from '@angular/common/http'
 import { Injectable, inject } from '@angular/core'
@@ -37,6 +37,12 @@ export class ChatService {
     return this._http.post<SellerAdminMessageResponse>(
       `${this._url}/message-send-seller-admin`,
       body
+    );
+  }
+
+  public getAdminMessages(receiverId: string): Observable<any> {
+    return this._http.get<any>(
+      `${this._url}/get-admin-messages/${receiverId}`
     );
   }
 }

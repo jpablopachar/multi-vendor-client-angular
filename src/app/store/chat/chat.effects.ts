@@ -64,3 +64,22 @@ export const sendMessageSellerAdminEffect = createEffect(
   },
   { functional: true }
 );
+
+export const getAdminMessageEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    chatService: ChatService = inject(ChatService)
+  ) => {
+    return actions$.pipe(
+      ofType(chatActions.getAdminMessages),
+      switchMap(({ receiverId }) => {
+        return chatService.getAdminMessages(receiverId).pipe(
+          map((response) => {
+            return chatActions.getAdminMessagesSuccess({ response });
+          })
+        );
+      })
+    );
+  },
+  { functional: true }
+);

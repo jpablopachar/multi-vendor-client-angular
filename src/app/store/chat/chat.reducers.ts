@@ -69,7 +69,18 @@ const chatFeature = createFeature({
         sellerAdminMessages: [...state.sellerAdminMessages, response.message],
         successMessage: 'Message sent successfully',
       })
-    )
+    ),
+    on(chatActions.getAdminMessages, (state: ChatState) => ({
+      ...state,
+    })),
+    on(
+      chatActions.getAdminMessagesSuccess,
+      (state: ChatState, { response }) => ({
+        ...state,
+        sellerAdminMessages: response.messages,
+        currentSeller: response.currentSeller,
+      })
+    ),
   ),
 });
 

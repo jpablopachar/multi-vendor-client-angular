@@ -16,7 +16,7 @@ import {
 } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
-import { InfoUser } from '@app/models'
+import { InfoUser, SellerAdminMessageRequest } from '@app/models'
 import { SocketService } from '@app/services'
 import {
   chatActions,
@@ -26,13 +26,18 @@ import {
   selectSellers,
   selectSuccessMessage,
 } from '@app/store/chat'
+import {
+  FontAwesomeModule,
+  IconDefinition,
+} from '@fortawesome/angular-fontawesome'
+import { faClose } from '@fortawesome/free-solid-svg-icons'
 import { Store } from '@ngrx/store'
 import { ToastrService } from 'ngx-toastr'
 
 @Component({
   selector: 'app-chat-seller',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, FontAwesomeModule],
   templateUrl: './chat-seller.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -55,14 +60,21 @@ export class ChatSellerComponent implements OnInit {
 
   private $_receiverMessage: WritableSignal<string | any> = signal('');
 
+  public $show: WritableSignal<boolean> = signal(false);
   public $text: WritableSignal<string> = signal('');
   public $sellerId: WritableSignal<string | null> = signal(null);
+
+  public faClose: IconDefinition = faClose;
 
   constructor() {
     effect(
       (): void => {
         if (this.$sellerId()) {
-          // Get admin messages
+          this._store.dispatch(
+            chatActions.getAdminMessages({
+              receiverId: this.$sellerId() as string,
+            })
+          );
         }
 
         if (this.$SuccessMessage()) {
@@ -76,10 +88,17 @@ export class ChatSellerComponent implements OnInit {
 
         if (this.$_receiverMessage()) {
           if (this.$_receiverMessage()) {
-            if (this.$_receiverMessage().senderId === this.$sellerId() && this.$_receiverMessage().receiverId === '') {
-              this._store.dispatch(chatActions.updateSellerMessage(this.$_receiverMessage()));
+            if (
+              this.$_receiverMessage().senderId === this.$sellerId() &&
+              this.$_receiverMessage().receiverId === ''
+            ) {
+              this._store.dispatch(
+                chatActions.updateSellerMessage(this.$_receiverMessage())
+              );
             } else {
-              this._toastr.success(`${this.$_receiverMessage().senderName} send a message`);
+              this._toastr.success(
+                `${this.$_receiverMessage().senderName} send a message`
+              );
 
               this._store.dispatch(chatActions.messageClear());
             }
@@ -107,8 +126,23 @@ export class ChatSellerComponent implements OnInit {
 
     this._socketService.on('', (message) => {
       this.$_receiverMessage.set(message);
-    })
+    });
 
     this._store.dispatch(chatActions.getSellers());
+  }
+
+  public send(): void {
+    if (this.$text().length > 0) {
+      const request: SellerAdminMessageRequest = {
+        senderId: '',
+        receiverId: this.$sellerId() as string,
+        message: this.$text(),
+        senderName: 'Admin Support',
+      };
+
+      this._store.dispatch(chatActions.sendMessageSellerAdmin({ request }));
+
+      this.$text.set('');
+    }
   }
 }

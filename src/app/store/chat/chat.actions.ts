@@ -28,5 +28,7 @@ export const chatActions = createActionGroup({
     sendMessageSellerAdminSuccess: props<{
       response: SellerAdminMessageResponse;
     }>(),
+    getAdminMessages: props<{ receiverId: string }>(),
+    getAdminMessagesSuccess: props<{ response: any }>(),
   },
 });
