@@ -15,7 +15,7 @@ import {
   signal,
 } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { ActivatedRoute } from '@angular/router'
+import { ActivatedRoute, RouterLink } from '@angular/router'
 import { InfoUser, SellerAdminMessageRequest } from '@app/models'
 import { SocketService } from '@app/services'
 import {
@@ -30,14 +30,14 @@ import {
   FontAwesomeModule,
   IconDefinition,
 } from '@fortawesome/angular-fontawesome'
-import { faClose } from '@fortawesome/free-solid-svg-icons'
+import { faClose, faGrinHearts, faList } from '@fortawesome/free-solid-svg-icons'
 import { Store } from '@ngrx/store'
 import { ToastrService } from 'ngx-toastr'
 
 @Component({
   selector: 'app-chat-seller',
   standalone: true,
-  imports: [CommonModule, FormsModule, FontAwesomeModule],
+  imports: [CommonModule, FormsModule, RouterLink, FontAwesomeModule],
   templateUrl: './chat-seller.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -52,7 +52,7 @@ export class ChatSellerComponent implements OnInit {
 
   public $sellers: Signal<InfoUser[]> = this._store.selectSignal(selectSellers);
   public $activeSellers = this._store.selectSignal(selectActiveSellers);
-  public $sellerAdminMessage = this._store.selectSignal(
+  public $sellerAdminMessages = this._store.selectSignal(
     selectSellerAdminMessages
   );
   public $currentSeller = this._store.selectSignal(selectCurrentSeller);
@@ -65,6 +65,8 @@ export class ChatSellerComponent implements OnInit {
   public $sellerId: WritableSignal<string | null> = signal(null);
 
   public faClose: IconDefinition = faClose;
+  public faList: IconDefinition = faList;
+  public faGrinHearts: IconDefinition = faGrinHearts;
 
   constructor() {
     effect(
@@ -80,7 +82,7 @@ export class ChatSellerComponent implements OnInit {
         if (this.$SuccessMessage()) {
           this._socketService.emit(
             'sendMessageAdminToSeller',
-            this.$sellerAdminMessage()[this.$sellerAdminMessage().length - 1]
+            this.$sellerAdminMessages()[this.$sellerAdminMessages().length - 1]
           );
 
           this._store.dispatch(chatActions.messageClear());
@@ -105,7 +107,7 @@ export class ChatSellerComponent implements OnInit {
           }
         }
 
-        if (this.$sellerAdminMessage()) {
+        if (this.$sellerAdminMessages()) {
           this._cdr.detectChanges();
 
           requestAnimationFrame((): void => {
