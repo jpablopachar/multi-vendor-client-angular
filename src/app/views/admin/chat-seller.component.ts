@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
 import { CommonModule } from '@angular/common'
 import {
@@ -16,7 +16,7 @@ import {
 } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router'
-import { InfoUser, SellerAdminMessageRequest } from '@app/models'
+import { InfoUser, Message, SellerAdminMessageRequest } from '@app/models'
 import { SocketService } from '@app/services'
 import {
   chatActions,
@@ -62,7 +62,7 @@ export class ChatSellerComponent implements OnInit {
   public $currentSeller = this._store.selectSignal(selectCurrentSeller);
   public $SuccessMessage = this._store.selectSignal(selectSuccessMessage);
 
-  private $_receiverMessage: WritableSignal<string | any> = signal('');
+  private $_receiverMessage: WritableSignal<string | Message> = signal('');
 
   public $show: WritableSignal<boolean> = signal(false);
   public $text: WritableSignal<string> = signal('');
@@ -75,14 +75,6 @@ export class ChatSellerComponent implements OnInit {
   constructor() {
     effect(
       (): void => {
-        /* if (this.$sellerId() !== null) {
-          this._store.dispatch(
-            chatActions.getAdminMessages({
-              receiverId: this.$sellerId() as string,
-            })
-          );
-        } */
-
         if (this.$SuccessMessage()) {
           this._socketService.emit(
             'sendMessageAdminToSeller',
@@ -93,21 +85,24 @@ export class ChatSellerComponent implements OnInit {
         }
 
         if (this.$_receiverMessage()) {
-          if (this.$_receiverMessage()) {
-            if (
-              this.$_receiverMessage().senderId === this.$sellerId() &&
-              this.$_receiverMessage().receiverId === ''
-            ) {
-              this._store.dispatch(
-                chatActions.updateSellerMessage(this.$_receiverMessage())
-              );
-            } else {
-              this._toastr.success(
-                `${this.$_receiverMessage().senderName} send a message`
-              );
+          if (
+            (this.$_receiverMessage() as Message).senderId ===
+              this.$sellerId() &&
+            (this.$_receiverMessage() as Message).receiverId === ''
+          ) {
+            this._store.dispatch(
+              chatActions.updateSellerMessage({
+                message: this.$_receiverMessage() as Message,
+              })
+            );
+          } else {
+            this._toastr.success(
+              `${
+                (this.$_receiverMessage() as Message).senderName
+              } send a message`
+            );
 
-              this._store.dispatch(chatActions.messageClear());
-            }
+            this._store.dispatch(chatActions.messageClear());
           }
         }
 
@@ -128,10 +123,8 @@ export class ChatSellerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    /* this.$sellerId.set(this._route.snapshot.params['sellerId']); */
     this._route.paramMap.subscribe((params: ParamMap): void => {
       if (params.get('sellerId')) {
-        // console.log(params);
         this.$sellerId.set(params.get('sellerId'));
 
         this._store.dispatch(
@@ -142,7 +135,7 @@ export class ChatSellerComponent implements OnInit {
       }
     });
 
-    this._socketService.on('', (message) => {
+    this._socketService.on('receiverSellerMessage', (message: Message) => {
       this.$_receiverMessage.set(message);
     });
 

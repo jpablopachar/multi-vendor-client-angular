@@ -67,5 +67,9 @@ export class MainComponent implements OnInit {
     this._socketService.on('activeSellers', (sellers): void => {
       this._store.dispatch(chatActions.updateSellers({ payload: sellers }));
     });
+
+    this._socketService.on('activeCustomers', (customers): void => {
+      this._store.dispatch(chatActions.updateCustomers({ payload: customers }));
+    });
   }
 }
