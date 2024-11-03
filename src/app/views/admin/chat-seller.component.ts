@@ -15,7 +15,7 @@ import {
   signal,
 } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { ActivatedRoute, RouterLink } from '@angular/router'
+import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router'
 import { InfoUser, SellerAdminMessageRequest } from '@app/models'
 import { SocketService } from '@app/services'
 import {
@@ -30,7 +30,11 @@ import {
   FontAwesomeModule,
   IconDefinition,
 } from '@fortawesome/angular-fontawesome'
-import { faClose, faGrinHearts, faList } from '@fortawesome/free-solid-svg-icons'
+import {
+  faClose,
+  faGrinHearts,
+  faList,
+} from '@fortawesome/free-solid-svg-icons'
 import { Store } from '@ngrx/store'
 import { ToastrService } from 'ngx-toastr'
 
@@ -71,13 +75,13 @@ export class ChatSellerComponent implements OnInit {
   constructor() {
     effect(
       (): void => {
-        if (this.$sellerId()) {
+        /* if (this.$sellerId() !== null) {
           this._store.dispatch(
             chatActions.getAdminMessages({
               receiverId: this.$sellerId() as string,
             })
           );
-        }
+        } */
 
         if (this.$SuccessMessage()) {
           this._socketService.emit(
@@ -124,7 +128,19 @@ export class ChatSellerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.$sellerId.set(this._route.snapshot.params['sellerId']);
+    /* this.$sellerId.set(this._route.snapshot.params['sellerId']); */
+    this._route.paramMap.subscribe((params: ParamMap): void => {
+      if (params.get('sellerId')) {
+        // console.log(params);
+        this.$sellerId.set(params.get('sellerId'));
+
+        this._store.dispatch(
+          chatActions.getAdminMessages({
+            receiverId: this.$sellerId() as string,
+          })
+        );
+      }
+    });
 
     this._socketService.on('', (message) => {
       this.$_receiverMessage.set(message);
