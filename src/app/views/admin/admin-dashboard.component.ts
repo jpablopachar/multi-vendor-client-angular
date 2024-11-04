@@ -9,7 +9,8 @@ import {
   inject,
 } from '@angular/core'
 import { RouterLink } from '@angular/router'
-import { ApexChartTemplate, InfoUser } from '@app/models'
+import { ApexChartTemplate, InfoUser, Message } from '@app/models'
+import { FromNowPipe } from '@app/pipes'
 import { selectUserInfo } from '@app/store/auth'
 import {
   dashboardActions,
@@ -34,7 +35,7 @@ import { NgApexchartsModule } from 'ng-apexcharts'
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule, FontAwesomeModule, RouterLink],
+  imports: [CommonModule, NgApexchartsModule, FontAwesomeModule, RouterLink, FromNowPipe],
   templateUrl: './admin-dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -50,7 +51,7 @@ export class AdminDashboardComponent {
     this._store.selectSignal(selectTotalSellers);
   public $recentOrders: Signal<any[]> =
     this._store.selectSignal(selectRecentOrders);
-  public $messages: Signal<string[]> = this._store.selectSignal(selectMessages);
+  public $messages: Signal<Message[]> = this._store.selectSignal(selectMessages);
 
   public $userInfo: Signal<InfoUser> = this._store.selectSignal(
     selectUserInfo
