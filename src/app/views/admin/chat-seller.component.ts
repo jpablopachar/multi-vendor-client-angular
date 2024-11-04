@@ -52,6 +52,9 @@ export class ChatSellerComponent implements OnInit {
   private readonly _toastr: ToastrService = inject(ToastrService);
   private readonly _socketService: SocketService = inject(SocketService);
 
+  private $_successMessage: Signal<string> =
+    this._store.selectSignal(selectSuccessMessage);
+
   public $sellers: Signal<InfoUser[]> = this._store.selectSignal(selectSellers);
   public $activeSellers: Signal<InfoUser[]> =
     this._store.selectSignal(selectActiveSellers);
@@ -61,10 +64,8 @@ export class ChatSellerComponent implements OnInit {
   public $currentSeller: Signal<InfoUser> = this._store.selectSignal(
     selectCurrentSeller
   ) as Signal<InfoUser>;
-  public $SuccessMessage: Signal<string> =
-    this._store.selectSignal(selectSuccessMessage);
 
-  private $_receiverMessage: WritableSignal<string | Message> = signal('');
+  private $_receiverMessage: WritableSignal<null | Message> = signal(null);
 
   public $show: WritableSignal<boolean> = signal(false);
   public $text: WritableSignal<string> = signal('');
@@ -77,11 +78,10 @@ export class ChatSellerComponent implements OnInit {
   constructor() {
     effect(
       (): void => {
-        if (this.$SuccessMessage()) {
-          this._socketService.emit(
-            'sendMessageAdminToSeller',
-            this.$sellerAdminMessages()[this.$sellerAdminMessages().length - 1]
-          );
+        if (this.$_successMessage()) {
+          const lastMessage = this.$sellerAdminMessages().slice(-1)[0];
+
+          this._socketService.emit('sendMessageAdminToSeller', lastMessage);
 
           this._store.dispatch(chatActions.messageClear());
         }
@@ -96,31 +96,9 @@ export class ChatSellerComponent implements OnInit {
 
             this._store.dispatch(chatActions.messageClear());
           }
-        }
 
-        /* if (this.$_receiverMessage()) {
-          if (typeof this.$_receiverMessage() === 'object') {
-            if (
-              (this.$_receiverMessage() as Message).senderId ===
-                this.$sellerId() &&
-              (this.$_receiverMessage() as Message).receiverId === ''
-            ) {
-              this._store.dispatch(
-                chatActions.updateSellerMessage({
-                  message: this.$_receiverMessage() as Message,
-                })
-              );
-            } else {
-              this._toastr.success(
-                `${
-                  (this.$_receiverMessage() as Message).senderName
-                } send a message`
-              );
-  
-              this._store.dispatch(chatActions.messageClear());
-            }
-          }
-        } */
+          this.$_receiverMessage.set(null);
+        }
 
         if (this.$sellerAdminMessages()) {
           this._cdr.detectChanges();
@@ -140,13 +118,14 @@ export class ChatSellerComponent implements OnInit {
 
   ngOnInit(): void {
     this._route.paramMap.subscribe((params: ParamMap): void => {
-      if (params.get('sellerId')) {
-        this.$sellerId.set(params.get('sellerId'));
-        // this.$_receiverMessage.set('');
+      const sellerId: string | null = params.get('sellerId');
+
+      if (sellerId) {
+        this.$sellerId.set(sellerId);
 
         this._store.dispatch(
           chatActions.getAdminMessages({
-            receiverId: this.$sellerId() as string,
+            receiverId: sellerId,
           })
         );
       }
@@ -155,10 +134,7 @@ export class ChatSellerComponent implements OnInit {
     this._socketService.on(
       'receiverSellerMessage',
       (message: Message): void => {
-        console.log('receiverSellerMessage', message);
-        console.log(this.$_receiverMessage());
         this.$_receiverMessage.set(message);
-        console.log(this.$_receiverMessage());
       }
     );
 
@@ -166,11 +142,13 @@ export class ChatSellerComponent implements OnInit {
   }
 
   public send(): void {
-    if (this.$text().length > 0) {
+    const text: string = this.$text().trim();
+
+    if (text) {
       const request: SellerAdminMessageRequest = {
         senderId: '',
         receiverId: this.$sellerId() as string,
-        message: this.$text(),
+        message: text,
         senderName: 'Admin Support',
       };
 
