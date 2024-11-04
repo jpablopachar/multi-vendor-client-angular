@@ -36,7 +36,7 @@
                                 alt=""
                             />
                             @for (activeSeller of $activeSellers(); track
-                            activeSeller;) {
+                            activeSeller._id;) {
                             <div
                                 class="w-[10px] h-[10px] bg-green-500 rounded-full absolute right-0 bottom-0"
                                 *ngIf="activeSeller.sellerId === seller._id"
@@ -85,15 +85,13 @@
                 </div>
                 <div class="py-4">
                     <div
+                        #scrollRef
                         class="bg-[#475569] h-[calc(100vh-290px)] rounded-md p-3 overflow-y-auto"
                     >
                         @if ($sellerId()) { @for (sellerAdmin of
                         $sellerAdminMessages(); track sellerAdmin._id;) { @if
                         (sellerAdmin.senderId === $sellerId()) {
-                        <div
-                            #scrollRef
-                            class="w-full flex justify-start items-center"
-                        >
+                        <div class="w-full flex justify-start items-center">
                             <div
                                 class="flex justify-start items-start gap-2 md:px-3 py-2 max-w-full lg:max-w-[85%]"
                             >
@@ -112,10 +110,7 @@
                             </div>
                         </div>
                         } @else {
-                        <div
-                            #scrollRef
-                            class="w-full flex justify-end items-center"
-                        >
+                        <div class="w-full flex justify-end items-center">
                             <div
                                 class="flex justify-start items-start gap-2 md:px-3 py-2 max-w-full lg:max-w-[85%]"
                             >

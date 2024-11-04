@@ -24,6 +24,7 @@ export interface InfoUser {
   createdAt: string;
   updatedAt: string;
   shopInfo?: ShopInfo;
+  sellerId: string;
 }
 
 export interface ShopInfo {

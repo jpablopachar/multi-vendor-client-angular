@@ -1,5 +1,3 @@
- 
-
 import { CommonModule } from '@angular/common'
 import {
   ChangeDetectionStrategy,
@@ -55,12 +53,16 @@ export class ChatSellerComponent implements OnInit {
   private readonly _socketService: SocketService = inject(SocketService);
 
   public $sellers: Signal<InfoUser[]> = this._store.selectSignal(selectSellers);
-  public $activeSellers = this._store.selectSignal(selectActiveSellers);
-  public $sellerAdminMessages = this._store.selectSignal(
+  public $activeSellers: Signal<InfoUser[]> =
+    this._store.selectSignal(selectActiveSellers);
+  public $sellerAdminMessages: Signal<Message[]> = this._store.selectSignal(
     selectSellerAdminMessages
   );
-  public $currentSeller = this._store.selectSignal(selectCurrentSeller);
-  public $SuccessMessage = this._store.selectSignal(selectSuccessMessage);
+  public $currentSeller: Signal<InfoUser> = this._store.selectSignal(
+    selectCurrentSeller
+  ) as Signal<InfoUser>;
+  public $SuccessMessage: Signal<string> =
+    this._store.selectSignal(selectSuccessMessage);
 
   private $_receiverMessage: WritableSignal<string | Message> = signal('');
 
@@ -84,27 +86,41 @@ export class ChatSellerComponent implements OnInit {
           this._store.dispatch(chatActions.messageClear());
         }
 
-        if (this.$_receiverMessage()) {
-          if (
-            (this.$_receiverMessage() as Message).senderId ===
-              this.$sellerId() &&
-            (this.$_receiverMessage() as Message).receiverId === ''
-          ) {
-            this._store.dispatch(
-              chatActions.updateSellerMessage({
-                message: this.$_receiverMessage() as Message,
-              })
-            );
+        const message = this.$_receiverMessage() as Message;
+
+        if (message) {
+          if (message.senderId === this.$sellerId()) {
+            this._store.dispatch(chatActions.updateSellerMessage({ message }));
           } else {
-            this._toastr.success(
-              `${
-                (this.$_receiverMessage() as Message).senderName
-              } send a message`
-            );
+            this._toastr.success(`${message.senderName} send a message`);
 
             this._store.dispatch(chatActions.messageClear());
           }
         }
+
+        /* if (this.$_receiverMessage()) {
+          if (typeof this.$_receiverMessage() === 'object') {
+            if (
+              (this.$_receiverMessage() as Message).senderId ===
+                this.$sellerId() &&
+              (this.$_receiverMessage() as Message).receiverId === ''
+            ) {
+              this._store.dispatch(
+                chatActions.updateSellerMessage({
+                  message: this.$_receiverMessage() as Message,
+                })
+              );
+            } else {
+              this._toastr.success(
+                `${
+                  (this.$_receiverMessage() as Message).senderName
+                } send a message`
+              );
+  
+              this._store.dispatch(chatActions.messageClear());
+            }
+          }
+        } */
 
         if (this.$sellerAdminMessages()) {
           this._cdr.detectChanges();
@@ -126,6 +142,7 @@ export class ChatSellerComponent implements OnInit {
     this._route.paramMap.subscribe((params: ParamMap): void => {
       if (params.get('sellerId')) {
         this.$sellerId.set(params.get('sellerId'));
+        // this.$_receiverMessage.set('');
 
         this._store.dispatch(
           chatActions.getAdminMessages({
@@ -135,9 +152,15 @@ export class ChatSellerComponent implements OnInit {
       }
     });
 
-    this._socketService.on('receiverSellerMessage', (message: Message) => {
-      this.$_receiverMessage.set(message);
-    });
+    this._socketService.on(
+      'receiverSellerMessage',
+      (message: Message): void => {
+        console.log('receiverSellerMessage', message);
+        console.log(this.$_receiverMessage());
+        this.$_receiverMessage.set(message);
+        console.log(this.$_receiverMessage());
+      }
+    );
 
     this._store.dispatch(chatActions.getSellers());
   }
