@@ -20,5 +20,8 @@ export const authActions = createActionGroup({
     ProfileImageUploadSuccess: props<{ response: UserInfoResponse }>(),
     ProfileInfoAdd: props<{ request: ShopInfo }>(),
     ProfileInfoAddSuccess: props<{ response: UserInfoResponse }>(),
+    Logout: props<{ role: string }>(),
+    LogoutSuccess: props<{ response: string }>(),
+    LogoutError: props<{ error: string }>(),
   }
 })

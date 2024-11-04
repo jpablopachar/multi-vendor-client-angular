@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common'
 import { ChangeDetectionStrategy, Component } from '@angular/core'
 
 @Component({
-  selector: 'app-orders-admin',
+  selector: 'app-add-banner',
   standalone: true,
   imports: [
     CommonModule,
   ],
-  template: `<p>orders works!</p>`,
+  template: `<p>addBanner works!</p>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrdersAdminComponent { }
+export class AddBannerComponent { }

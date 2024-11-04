@@ -1,24 +1,69 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { CommonModule } from '@angular/common'
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Signal,
+  effect,
+  inject,
+} from '@angular/core'
 import { RouterLink } from '@angular/router'
-import { ApexChartTemplate } from '@app/models'
+import { ApexChartTemplate, InfoUser } from '@app/models'
+import { FromNowPipe } from '@app/pipes'
+import { selectUserInfo } from '@app/store/auth'
+import {
+  dashboardActions,
+  selectMessages,
+  selectRecentOrders,
+  selectTotalOrders,
+  selectTotalPendingOrders,
+  selectTotalProducts,
+  selectTotalSale,
+} from '@app/store/dashboard'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import {
+  IconDefinition,
   faCentSign,
   faDollarSign,
   faShoppingCart,
-  IconDefinition,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons'
+import { Store } from '@ngrx/store'
 import { NgApexchartsModule } from 'ng-apexcharts'
 
 @Component({
   selector: 'app-seller-dashboard',
   standalone: true,
-  imports: [CommonModule, NgApexchartsModule, FontAwesomeModule, RouterLink],
+  imports: [
+    CommonModule,
+    NgApexchartsModule,
+    FontAwesomeModule,
+    RouterLink,
+    FromNowPipe,
+  ],
   templateUrl: './seller-dashboard.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SellerDashboardComponent {
+  private readonly _store = inject(Store);
+
+  public $totalSale: Signal<number> = this._store.selectSignal(selectTotalSale);
+  public $totalOrders: Signal<number> =
+    this._store.selectSignal(selectTotalOrders);
+  public $totalProducts: Signal<number> =
+    this._store.selectSignal(selectTotalProducts);
+  public $totalPendingOrders: Signal<number> = this._store.selectSignal(
+    selectTotalPendingOrders
+  );
+  public $recentOrders: Signal<any[]> =
+    this._store.selectSignal(selectRecentOrders);
+  public $messages: Signal<any[]> = this._store.selectSignal(selectMessages);
+
+  public $userInfo: Signal<InfoUser> = this._store.selectSignal(
+    selectUserInfo
+  ) as Signal<InfoUser>;
+
   public state: ApexChartTemplate = {
     series: [
       {
@@ -114,6 +159,18 @@ export class SellerDashboardComponent {
   public faDollarSign: IconDefinition = faDollarSign;
   public faCentSign: IconDefinition = faCentSign;
   public faShoppingCart: IconDefinition = faShoppingCart;
+  public faUser: IconDefinition = faUser;
 
   public numbers = [1, 2, 3, 4, 5];
+
+  constructor() {
+    effect(
+      (): void => {
+        this._store.dispatch(
+          dashboardActions.getSellerDashboardData({ role: 'seller' })
+        );
+      },
+      { allowSignalWrites: true }
+    );
+  }
 }

@@ -4,7 +4,7 @@ import {
   InfoUser,
   Payload,
   SellerListResponse,
-  SellerStatusUpdateResponse
+  SellerStatusUpdateResponse,
 } from '@app/models'
 import { environment } from '@src/environments/environment'
 import { Observable } from 'rxjs'
@@ -15,7 +15,7 @@ import { Observable } from 'rxjs'
 export class SellerService {
   private _http: HttpClient = inject(HttpClient);
 
-  private _url: string = `${environment.apiUrl}/api`;
+  private _url = `${environment.apiUrl}/api`;
 
   public getSellers(payload: Payload): Observable<SellerListResponse> {
     const { page, parPage, searchValue } = payload;
@@ -31,12 +31,29 @@ export class SellerService {
     );
   }
 
-  public sellerStatusUpdate(
-    body: { sellerId: string; status: string }
-  ): Observable<SellerStatusUpdateResponse> {
+  public sellerStatusUpdate(body: {
+    sellerId: string;
+    status: string;
+  }): Observable<SellerStatusUpdateResponse> {
     return this._http.post<SellerStatusUpdateResponse>(
       `${this._url}/seller-status-update`,
       body
+    );
+  }
+
+  public getActiveSellers(payload: Payload): Observable<SellerListResponse> {
+    const { page, parPage, searchValue } = payload;
+
+    return this._http.get<SellerListResponse>(
+      `${this._url}/get-sellers?page=${page}&&searchValue=${searchValue}&&parPage=${parPage}`
+    );
+  }
+
+  public getDeactiveSellers(payload: Payload): Observable<SellerListResponse> {
+    const { page, parPage, searchValue } = payload;
+
+    return this._http.get<SellerListResponse>(
+      `${this._url}/get-deactive-sellers?page=${page}&&searchValue=${searchValue}&&parPage=${parPage}`
     );
   }
 }

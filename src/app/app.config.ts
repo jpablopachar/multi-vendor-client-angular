@@ -2,19 +2,34 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http'
 import {
   ApplicationConfig,
   isDevMode,
-  provideExperimentalZonelessChangeDetection
+  provideExperimentalZonelessChangeDetection,
 } from '@angular/core'
 import { provideAnimations } from '@angular/platform-browser/animations'
 import { provideRouter } from '@angular/router'
 import { provideEffects } from '@ngrx/effects'
-import { provideState, provideStore } from '@ngrx/store'
+import { provideStore } from '@ngrx/store'
 import { provideStoreDevtools } from '@ngrx/store-devtools'
 import { provideToastr } from 'ngx-toastr'
 import { routes } from './app.routes'
 import { cookiesInterceptor } from './interceptors'
 import { AuthEffects, authFeatureKey, authReducer } from './store/auth'
-import { CategoryEffects, categoryFeatureKey, categoryReducer } from './store/category'
-import { ProductEffects, productFeatureKey, productReducer } from './store/product'
+import {
+  CategoryEffects,
+  categoryFeatureKey,
+  categoryReducer,
+} from './store/category'
+import { ChatEffects, chatFeatureKey, chatReducer } from './store/chat'
+import {
+  DashboardEffects,
+  dashboardFeatureKey,
+  dashboardReducer,
+} from './store/dashboard'
+import { OrderEffects, orderFeatureKey, orderReducer } from './store/order'
+import {
+  ProductEffects,
+  productFeatureKey,
+  productReducer,
+} from './store/product'
 import { SellerEffects, sellerFeatureKey, sellerReducer } from './store/seller'
 
 export const appConfig: ApplicationConfig = {
@@ -27,12 +42,24 @@ export const appConfig: ApplicationConfig = {
     }),
     provideRouter(routes),
     provideHttpClient(withInterceptors([cookiesInterceptor])),
-    provideStore(),
-    provideState(authFeatureKey, authReducer),
-    provideState(categoryFeatureKey, categoryReducer),
-    provideState(productFeatureKey, productReducer),
-    provideState(sellerFeatureKey, sellerReducer),
-    provideEffects(AuthEffects, CategoryEffects, ProductEffects, SellerEffects),
+    provideStore({
+      [authFeatureKey]: authReducer,
+      [categoryFeatureKey]: categoryReducer,
+      [productFeatureKey]: productReducer,
+      [sellerFeatureKey]: sellerReducer,
+      [dashboardFeatureKey]: dashboardReducer,
+      [chatFeatureKey]: chatReducer,
+      [orderFeatureKey]: orderReducer,
+    }),
+    provideEffects(
+      AuthEffects,
+      CategoryEffects,
+      ChatEffects,
+      DashboardEffects,
+      ProductEffects,
+      SellerEffects,
+      OrderEffects,
+    ),
     provideStoreDevtools({
       maxAge: 25,
       logOnly: !isDevMode(),

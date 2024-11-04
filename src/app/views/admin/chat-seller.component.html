@@ -1,0 +1,161 @@
+<div class="px-2 lg:px-7 py-5">
+    <div class="w-full bg-[#6a5fdf] px-4 py-4 rounded-md h-[calc(100vh-140px)]">
+        <div class="flex w-full h-full relative">
+            <div
+                class="w-[280px] h-full absolute z-10 md:left-0 md:relative transition-all"
+                [ngClass]="$show() ? '-left-[16px]' : '-left-[336px]'"
+            >
+                <div
+                    class="w-full h-[calc(100vh-177px)] bg-[#9e97e9] md:bg-transparent overflow-y-auto"
+                >
+                    <div
+                        class="flex text-xl justify-between items-center p-4 md:p-0 md:px-3 md:pb-3 text-white"
+                    >
+                        <h2>Sellers</h2>
+                        <span
+                            class="block cursor-pointer md:hidden"
+                            (click)="$show.set(!$show())"
+                            ><fa-icon [icon]="faClose"></fa-icon
+                        ></span>
+                    </div>
+                    @for (seller of $sellers(); track seller._id;) {
+                    <a
+                        class="h-[60px] flex justify-start gap-2 items-center text-white px-2 py-2 rounded-md cursor-pointer"
+                        [ngClass]="
+                            $sellerId() === seller._id ? 'bg-[#8288ed]' : ''
+                        "
+                        [routerLink]="[
+                            '/admin/dashboard/chat-sellers',
+                            seller._id
+                        ]"
+                    >
+                        <div class="relative">
+                            <img
+                                class="w-[38px] h-[38px] border-white border-2 max-w-[38px] p-[2px] rounded-full"
+                                [src]="seller.image"
+                                alt=""
+                            />
+                            @for (activeSeller of $activeSellers(); track
+                            activeSeller._id;) {
+                            <div
+                                class="w-[10px] h-[10px] bg-green-500 rounded-full absolute right-0 bottom-0"
+                                *ngIf="activeSeller.sellerId === seller._id"
+                            ></div>
+                            }
+                        </div>
+                        <div
+                            class="flex justify-center items-start flex-col w-full"
+                        >
+                            <div
+                                class="flex justify-between items-center w-full"
+                            >
+                                <h2 class="text-base font-semibold">
+                                    {{ seller.name }}
+                                </h2>
+                            </div>
+                        </div>
+                    </a>
+                    }
+                </div>
+            </div>
+            <div class="w-full md:w-[calc(100%-200px)] md:pl-4">
+                <div class="flex justify-between items-center">
+                    @if ($sellerId()) {
+                    <div class="flex justify-start items-center gap-3">
+                        <div class="relative">
+                            <img
+                                class="w-[45px] h-[45px] border-green-500 border-2 max-w-[45px] p-[2px] rounded-full"
+                                [src]="$currentSeller().image"
+                                alt=""
+                            />
+                            <div
+                                class="w-[10px] h-[10px] bg-green-500 rounded-full absolute right-0 bottom-0"
+                            ></div>
+                        </div>
+                        <span class="text-white">{{
+                            $currentSeller().name
+                        }}</span>
+                    </div>
+                    }
+                    <div
+                        class="w-[35px] flex md:hidden h-[35px] rounded-sm bg-blue-500 shadow-lg hover:shadow-blue-500/50 justify-center cursor-pointer items-center text-white"
+                    >
+                        <span><fa-icon [icon]="faList"></fa-icon></span>
+                    </div>
+                </div>
+                <div class="py-4">
+                    <div
+                        #scrollRef
+                        class="bg-[#475569] h-[calc(100vh-290px)] rounded-md p-3 overflow-y-auto"
+                    >
+                        @if ($sellerId()) { @for (sellerAdmin of
+                        $sellerAdminMessages(); track sellerAdmin._id;) { @if
+                        (sellerAdmin.senderId === $sellerId()) {
+                        <div class="w-full flex justify-start items-center">
+                            <div
+                                class="flex justify-start items-start gap-2 md:px-3 py-2 max-w-full lg:max-w-[85%]"
+                            >
+                                <div>
+                                    <img
+                                        class="w-[38px] h-[38px] border-2 border-white rounded-full max-w-[38px] p-[3px]"
+                                        src="images/demo.jpg"
+                                        alt=""
+                                    />
+                                </div>
+                                <div
+                                    class="flex justify-center items-start flex-col w-full bg-blue-500 shadow-lg shadow-blue-500/50 text-white py-1 px-2 rounded-sm"
+                                >
+                                    <span>{{ sellerAdmin.message }} </span>
+                                </div>
+                            </div>
+                        </div>
+                        } @else {
+                        <div class="w-full flex justify-end items-center">
+                            <div
+                                class="flex justify-start items-start gap-2 md:px-3 py-2 max-w-full lg:max-w-[85%]"
+                            >
+                                <div
+                                    class="flex justify-center items-start flex-col w-full bg-red-500 shadow-lg shadow-red-500/50 text-white py-1 px-2 rounded-sm"
+                                >
+                                    <span>{{ sellerAdmin.message }} </span>
+                                </div>
+                                <div>
+                                    <img
+                                        class="w-[38px] h-[38px] border-2 border-white rounded-full max-w-[38px] p-[3px]"
+                                        src="images/admin.jpg"
+                                        alt=""
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        } } } @else {
+                        <div
+                            class="w-full h-full flex justify-center items-center flex-col gap-2 text-white"
+                        >
+                            <span
+                                ><fa-icon [icon]="faGrinHearts"></fa-icon
+                            ></span>
+                            <span>Select Seller </span>
+                        </div>
+                        }
+                    </div>
+                </div>
+                <form (ngSubmit)="send()" class="flex gap-3">
+                    <input
+                        class="w-full flex justify-between px-2 border border-slate-700 items-center py-[5px] focus:border-blue-500 rounded-md outline-none bg-transparent text-[#d0d2d6]"
+                        type="text"
+                        placeholder="Input Your Message"
+                        [(ngModel)]="$text"
+                        [ngModelOptions]="{ standalone: true }"
+                    />
+                    <button
+                        type="submit"
+                        class="shadow-lg bg-[#06b6d4] hover:shadow-cyan-500/50 text-semibold w-[75px] h-[35px] rounded-md text-white flex justify-center items-center"
+                    >
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

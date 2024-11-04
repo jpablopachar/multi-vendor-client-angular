@@ -97,7 +97,7 @@ export const allNav: NavType[] = [
     title: 'Discount Product',
     icon: faTag,
     role: 'seller',
-    path: '/seller/dashboard/discount-product',
+    path: '/seller/dashboard/discount-products',
   },
   {
     id: 13,

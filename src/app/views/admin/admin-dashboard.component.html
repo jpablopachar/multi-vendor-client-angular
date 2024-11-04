@@ -6,7 +6,9 @@
             class="flex justify-between items-center p-5 bg-[#fae8e8] rounded-md gap-3"
         >
             <div class="flex flex-col justify-start items-start text-[#5c5a5a]">
-                <h2 class="text-3xl font-bold">$3434</h2>
+                <h2 class="text-3xl font-bold">
+                    {{ $totalSale() | currency }}
+                </h2>
                 <span class="text-md font-medium">Total Sales</span>
             </div>
             <div
@@ -19,7 +21,7 @@
             class="flex justify-between items-center p-5 bg-[#fde2ff] rounded-md gap-3"
         >
             <div class="flex flex-col justify-start items-start text-[#5c5a5a]">
-                <h2 class="text-3xl font-bold">50</h2>
+                <h2 class="text-3xl font-bold">{{ $totalProducts() }}</h2>
                 <span class="text-md font-medium">Products</span>
             </div>
             <div
@@ -32,7 +34,7 @@
             class="flex justify-between items-center p-5 bg-[#e9feea] rounded-md gap-3"
         >
             <div class="flex flex-col justify-start items-start text-[#5c5a5a]">
-                <h2 class="text-3xl font-bold">10</h2>
+                <h2 class="text-3xl font-bold">{{ $totalSellers() }}</h2>
                 <span class="text-md font-medium">Sellers</span>
             </div>
             <div
@@ -45,7 +47,7 @@
             class="flex justify-between items-center p-5 bg-[#ecebff] rounded-md gap-3"
         >
             <div class="flex flex-col justify-start items-start text-[#5c5a5a]">
-                <h2 class="text-3xl font-bold">54</h2>
+                <h2 class="text-3xl font-bold">{{ $totalOrders() }}</h2>
                 <span class="text-md font-medium">Orders</span>
             </div>
             <div
@@ -80,13 +82,19 @@
                 </div>
                 <div class="flex flex-col gap-2 pt-6 text-[#d0d2d6]">
                     <ol class="relative border-1 border-slate-600 ml-4">
+                        @for (message of $messages(); track message._id; let idx
+                        = $index) {
                         <li class="mb-3 ml-6">
                             <div
                                 class="flex absolute -left-5 shadow-lg justify-center items-center w-10 h-10 p-[6px] bg-[#4c7fe2] rounded-full z-10"
                             >
                                 <img
                                     class="w-full rounded-full h-full shadow-lg"
-                                    src="images/admin.jpg"
+                                    [src]="
+                                        message.senderId === $userInfo()._id
+                                            ? $userInfo().image
+                                            : 'images/admin.jpg'
+                                    "
                                     alt=""
                                 />
                             </div>
@@ -99,74 +107,17 @@
                                     <a class="text-md font-normal">Admin</a>
                                     <time
                                         class="mb-1 text-sm font-normal sm:order-last sm:mb-0"
-                                        >2 day ago</time
+                                        >{{ message.createdAt | fromNow }}</time
                                     >
                                 </div>
                                 <div
                                     class="p-2 text-xs font-normal bg-slate-700 rounded-lg border border-slate-800"
                                 >
-                                    How Are you
+                                    {{ message.message }}
                                 </div>
                             </div>
                         </li>
-                        <li class="mb-3 ml-6">
-                            <div
-                                class="flex absolute -left-5 shadow-lg justify-center items-center w-10 h-10 p-[6px] bg-[#4c7fe2] rounded-full z-10"
-                            >
-                                <img
-                                    class="w-full rounded-full h-full shadow-lg"
-                                    src="images/admin.jpg"
-                                    alt=""
-                                />
-                            </div>
-                            <div
-                                class="p-3 bg-slate-800 rounded-lg border border-slate-600 shadow-sm"
-                            >
-                                <div
-                                    class="flex justify-between items-center mb-2"
-                                >
-                                    <a class="text-md font-normal">Admin</a>
-                                    <time
-                                        class="mb-1 text-sm font-normal sm:order-last sm:mb-0"
-                                        >2 day ago</time
-                                    >
-                                </div>
-                                <div
-                                    class="p-2 text-xs font-normal bg-slate-700 rounded-lg border border-slate-800"
-                                >
-                                    How Are you
-                                </div>
-                            </div>
-                        </li>
-                        <li class="mb-3 ml-6">
-                            <div
-                                class="flex absolute -left-5 shadow-lg justify-center items-center w-10 h-10 p-[6px] bg-[#4c7fe2] rounded-full z-10"
-                            >
-                                <img
-                                    class="w-full rounded-full h-full shadow-lg"
-                                    src="images/admin.jpg"
-                                    alt=""
-                                />
-                            </div>
-                            <div
-                                class="p-3 bg-slate-800 rounded-lg border border-slate-600 shadow-sm"
-                            >
-                                <div
-                                    class="flex justify-between items-center mb-2"
-                                >
-                                    <a class="text-md font-normal">Admin</a>
-                                    <time
-                                        class="mb-1 text-sm font-normal sm:order-last sm:mb-0"
-                                        >2 day ago</time
-                                    >
-                                </div>
-                                <div
-                                    class="p-2 text-xs font-normal bg-slate-700 rounded-lg border border-slate-800"
-                                >
-                                    How Are you
-                                </div>
-                            </div>
-                        </li>
+                        }
                     </ol>
                 </div>
             </div>

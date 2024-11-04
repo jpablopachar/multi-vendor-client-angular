@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http'
 import { inject } from '@angular/core'
+import { Router } from '@angular/router'
 import { AuthResponse, UserInfoResponse } from '@app/models'
 import { AuthService } from '@app/services'
 import { Actions, createEffect, ofType } from '@ngrx/effects'
@@ -143,6 +144,41 @@ export const profileInfoAddEffect = createEffect(
               authActions.profileInfoAddSuccess({ response })
             )
           )
+      )
+    );
+  },
+  { functional: true }
+);
+
+export const logoutEffect = createEffect(
+  (
+    actions$ = inject(Actions),
+    router: Router = inject(Router),
+    authService: AuthService = inject(AuthService)
+  ) => {
+    return actions$.pipe(
+      ofType(authActions.logout),
+      switchMap(({ role }) =>
+        authService.logout().pipe(
+          map(({ message }) => {
+            localStorage.removeItem('accessToken');
+
+            if (role === 'admin') {
+              router.navigate(['/admin/login']);
+            } else {
+              router.navigate(['/login']);
+            }
+
+            return authActions.logoutSuccess({ response: message });
+          }),
+          catchError((errorResponse: HttpErrorResponse) =>
+            of(
+              authActions.logoutError({
+                error: errorResponse.error.error,
+              })
+            )
+          )
+        )
       )
     );
   },

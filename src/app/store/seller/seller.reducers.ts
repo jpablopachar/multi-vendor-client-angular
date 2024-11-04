@@ -52,7 +52,35 @@ const sellerFeature = createFeature({
         seller: action.response.seller as InfoUser,
         successMessage: action.response.message,
       })
-    )
+    ),
+    on(
+      sellerActions.getActiveSellers,
+      (state: SellerState) => ({
+        ...state,
+      })
+    ),
+    on(
+      sellerActions.getActiveSellersSuccess,
+      (state: SellerState, { response }) => ({
+        ...state,
+        sellers: response.sellers,
+        totalSellers: response.totalSellers,
+      })
+    ),
+    on(
+      sellerActions.getDeactiveSellers,
+      (state: SellerState) => ({
+        ...state,
+      })
+    ),
+    on(
+      sellerActions.getDeactiveSellersSuccess,
+      (state: SellerState, { response }) => ({
+        ...state,
+        sellers: response.sellers,
+        totalSellers: response.totalSellers,
+      })
+    ),
   ),
 });
 
@@ -64,4 +92,5 @@ export const {
   selectErrorMessage,
   selectSellers,
   selectSeller,
+  selectTotalSellers,
 } = sellerFeature;

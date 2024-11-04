@@ -3,14 +3,19 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  inject,
   Input,
   Output,
+  Signal,
 } from '@angular/core'
+import { InfoUser } from '@app/models'
+import { selectUserInfo } from '@app/store/auth'
 import {
   FontAwesomeModule,
   IconDefinition,
 } from '@fortawesome/angular-fontawesome'
 import { faList } from '@fortawesome/free-solid-svg-icons'
+import { Store } from '@ngrx/store'
 
 @Component({
   selector: 'app-header',
@@ -40,12 +45,18 @@ import { faList } from '@fortawesome/free-solid-svg-icons'
         <div class="flex justify-center items-center">
           <div class="flex justify-center items-center gap-3">
             <div class="flex justify-center items-center flex-col text-end">
-              <h2 class="text-md font-bold">Juan Pachar</h2>
-              <span class="text-[14px] w-full font-normal">Admin</span>
+              <h2 class="text-md font-bold">{{ $userInfo().name }}</h2>
+              <span class="text-[14px] w-full font-normal">{{
+                $userInfo().role
+              }}</span>
             </div>
             <img
               class="w-[45px] h-[45px] rounded-full overflow-hidden"
-              src="images/admin.jpg"
+              [src]="
+                $userInfo().role === 'admin'
+                  ? 'images/admin.jpg'
+                  : $userInfo().image
+              "
               alt=""
             />
           </div>
@@ -59,6 +70,12 @@ export class HeaderComponent {
   @Input({ required: true }) showSidebar!: boolean;
 
   @Output() setShowSidebar = new EventEmitter<boolean>();
+
+  private readonly _store = inject(Store);
+
+  public $userInfo: Signal<InfoUser> = this._store.selectSignal(
+    selectUserInfo
+  ) as Signal<InfoUser>;
 
   public faList: IconDefinition = faList;
 }

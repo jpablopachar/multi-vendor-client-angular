@@ -1,6 +1,18 @@
 import { CommonModule } from '@angular/common'
-import { ChangeDetectionStrategy, Component } from '@angular/core'
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  Signal,
+  effect,
+  inject,
+} from '@angular/core'
 import { RouterOutlet } from '@angular/router'
+import { InfoUser } from '@app/models'
+import { SocketService } from '@app/services'
+import { selectUserInfo } from '@app/store/auth'
+import { chatActions } from '@app/store/chat'
+import { Store } from '@ngrx/store'
 import { HeaderComponent } from './header.component'
 import { SidebarComponent } from './sidebar.component'
 
@@ -25,6 +37,39 @@ import { SidebarComponent } from './sidebar.component'
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainComponent {
+export class MainComponent implements OnInit {
+  private readonly _store = inject(Store);
+  private readonly _socketService: SocketService = inject(SocketService);
+
+  public $userInfo: Signal<InfoUser> = this._store.selectSignal(
+    selectUserInfo
+  ) as Signal<InfoUser>;
+
   public showSidebar = false;
+
+  constructor() {
+    effect(() => {
+      if (this.$userInfo()) {
+        if (this.$userInfo().role === 'seller') {
+          this._socketService.emit(
+            'addSeller',
+            this.$userInfo()._id,
+            this.$userInfo()
+          );
+        } else {
+          this._socketService.emit('addAdmin', this.$userInfo());
+        }
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this._socketService.on('activeSellers', (sellers): void => {
+      this._store.dispatch(chatActions.updateSellers({ payload: sellers }));
+    });
+
+    this._socketService.on('activeCustomers', (customers): void => {
+      this._store.dispatch(chatActions.updateCustomers({ payload: customers }));
+    });
+  }
 }
